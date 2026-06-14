@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Aaryan Kumar Saini — QA Engineer, Data Analyst &amp; Web Developer. Building quality-driven digital experiences through testing, code, and data. Written in logic, built with care." />
+  <meta name="theme-color" content="#16100f" />
+  <title>Aaryan Kumar Saini — QA Engineer &amp; Developer</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body data-loading="true">
+  <a href="#page" class="skip-link">Skip to main content</a>
+
+  <!-- story-progress bar (how far through the narrative you are) -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- ============ FILM GRAIN + VIGNETTE ============ -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- ============ GLOW CURSOR (comet trail injected by JS) ============ -->
+  <canvas class="cursor-trail" id="cursorTrail" aria-hidden="true"></canvas>
+  <div class="cursorx" id="cursorx" aria-hidden="true">
+    <span class="cursorx__glow" id="cxGlow"></span>
+    <span class="cursorx__core" id="cxCore"></span>
+  </div>
+
+  <!-- ============ PRELOADER ============ -->
+  <div id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__monogram">
+        <span>A</span><span>S</span>
+      </div>
+      <div class="preloader__bar"><i></i></div>
+      <div class="preloader__meta">
+        <span class="preloader__label">Aaryan Saini</span>
+        <span class="preloader__count" data-count>00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TOP CHROME ============ -->
+  <header class="chrome" id="chrome">
+
+    <button class="chrome__menu" id="menuToggle" data-cursor="link" aria-expanded="false" aria-controls="overlayNav" style="margin-left:auto">
+      <span class="chrome__menu-label">Menu</span>
+      <span class="chrome__menu-glyph"><i></i><i></i></span>
+    </button>
+  </header>
+
+  <!-- ============ FULLSCREEN OVERLAY NAV ============ -->
+  <nav class="overlay-nav" id="overlayNav" aria-hidden="true">
+    <div class="overlay-nav__bg"></div>
+    <div class="overlay-nav__inner">
+      <ul class="overlay-nav__list">
+        <li><a href="#about" data-cursor="link"><em>02</em> About</a></li>
+        <li><a href="#skills" data-cursor="link"><em>03</em> Skills</a></li>
+        <li><a href="#projects" data-cursor="link"><em>04</em> Selected Work</a></li>
+        <li><a href="#experience" data-cursor="link"><em>05</em> Experience</a></li>
+        <li><a href="#certifications" data-cursor="link"><em>06</em> Honours</a></li>
+        <li><a href="#resume" data-cursor="link"><em>07</em> Résumé</a></li>
+        <li><a href="#contact" data-cursor="link"><em>08</em> Contact</a></li>
+      </ul>
+      <div class="overlay-nav__aside">
+        <p class="overlay-nav__caption">Get in touch</p>
+        <a class="overlay-nav__mail" href="mailto:aaryankrsaini24@gmail.com"
+          data-cursor="link">aaryankrsaini24@gmail.com</a>
+        <div class="overlay-nav__socials">
+          <a href="https://linkedin.com/in/Aaryan-Saini" target="_blank" data-cursor="link">LinkedIn</a>
+          <a href="https://github.com/AaryanSaini" target="_blank" data-cursor="link">GitHub</a>
+          <a href="tel:+919625511881" data-cursor="link">+91 96255 11881</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="page">
+    <!-- ====================================================== -->
+    <!-- 01 · HERO                                              -->
+    <!-- ====================================================== -->
+    <section class="hero" id="hero">
+      <div class="hero__aura" aria-hidden="true"></div>
+      <div class="hero__grid">
+        <p class="hero__eyebrow reveal-up">
+          <span>QA Engineer</span><span class="hero__eyebrow-line"></span><span>Portfolio ·
+            MMXXVI</span>
+        </p>
+
+        <h1 class="hero__title">
+          <span class="hero__line hero__line--serif" data-split>Written in logic,</span>
+          <span class="hero__line hero__line--sans" data-split data-scramble>BUILT IN CODE.</span>
+        </h1>
+
+        <div class="hero__foot">
+          <p class="hero__lede reveal-up">
+            I'm <strong>Aaryan Kumar Saini</strong> — a QA engineer who hunts bugs before users do,
+            writes test cases that hold, and ensures every product ships with quality baked in.
+          </p>
+          <a href="#about" class="hero__scroll" data-cursor="link">
+            <span class="hero__scroll-text">Begin the descent</span>
+            <span class="hero__scroll-rule"><i></i></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================== -->
+    <!-- OVERLAP WRAPPER — slides up over the sticky hero        -->
+    <!-- ====================================================== -->
+    <div class="reveal" id="reveal">
+
+      <!-- ============ 02 · ABOUT ============ -->
+      <section class="about section" id="about" data-theme="light" aria-labelledby="about-h">
+        <h2 id="about-h" class="sr-only">About Aaryan Kumar Saini</h2>
+        <div class="section__head">
+          <span class="section__tag">02 — About</span>
+          <span class="section__lead">QA, Data &amp; Dev — one mind</span>
+          <span class="section__rule"></span>
+        </div>
+
+        <div class="about__grid">
+          <p class="about__kicker">
+            <span class="about__name">Aaryan Kumar Saini</span> works at the crossroads of quality, data and development
+            —
+          </p>
+          <p class="about__body" data-reveal-text>
+            ensuring every product he touches is tested thoroughly, analysed intelligently, and built with care.
+            Across internships in QA, data analytics and web development, he has shipped robust systems for sales
+            management, school ERPs, e-commerce platforms, and AI-based diagnostics. He believes a bug caught
+            early is a user saved always, that data without insight is just noise, and that the best code is the
+            code no one notices because it simply works. Trained in SQL, Python and modern web technologies,
+            he closes the loop between quality assurance and engineering delivery.
+          </p>
+        </div>
+
+        <ul class="about__stats">
+          <li><b data-count-to="3">0</b><span>Internships completed</span></li>
+          <li><b data-count-to="50" data-suffix="k+">0</b><span>Content creator followers</span></li>
+          <li><b data-count-to="1000" data-suffix="+">0</b><span>Bugs caught &amp; verified</span></li>
+          <li><b data-count-to="10" data-suffix="+">0</b><span>Platforms tested</span></li>
+        </ul>
+      </section>
+
+      <!-- ============ 03 · SKILLS ============ -->
+      <section class="skills section section--dark" id="skills" data-theme="dark">
+        <div class="section__head">
+          <span class="section__tag">03 — Capabilities</span>
+          <span class="section__lead">QA · Data · Code</span>
+          <span class="section__rule"></span>
+        </div>
+
+        <h2 class="skills__title">
+          <span class="serif-it">A</span> craft <span class="serif-it">of</span> <b>three hands.</b>
+        </h2>
+
+        <div class="skills__cols">
+          <article class="skills__col">
+            <header><span class="skills__no">i</span>
+              <h3>Manual &amp; Automation</h3>
+            </header>
+            <ul>
+              <li>Functional, Regression &amp; Smoke</li>
+              <li>Cross-Browser &amp; Mobile</li>
+              <li>Test Cases, Scenarios &amp; UAT</li>
+              <li>ERP &amp; Multi-Role Testing</li>
+              <li>Playwright (Python)</li>
+              <li>API Testing — Postman</li>
+              <li>SDLC / STLC</li>
+            </ul>
+          </article>
+          <article class="skills__col">
+            <header><span class="skills__no">ii</span>
+              <h3>Data</h3>
+            </header>
+            <ul>
+              <li>SQL &amp; MySQL</li>
+              <li>Python &amp; Excel</li>
+              <li>Database Testing</li>
+              <li>Dashboard &amp; Pivot Reports</li>
+              <li>Data Cleaning &amp; Analysis</li>
+            </ul>
+          </article>
+          <article class="skills__col">
+            <header><span class="skills__no">iii</span>
+              <h3>Tools &amp; Code</h3>
+            </header>
+            <ul>
+              <li>HTML, CSS &amp; JavaScript</li>
+              <li>Git &amp; GitHub</li>
+              <li>Jira &amp; Chrome DevTools</li>
+              <li>Shopify Theme Testing</li>
+              <li>AI/ML Application QA</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__track">
+            <span>Manual Testing</span><span>·</span><span>Selenium</span><span>·</span><span>Postman</span><span>·</span>
+            <span>Jira</span><span>·</span><span>API Testing</span><span>·</span><span>SQL</span><span>·</span>
+            <span>Regression</span><span>·</span><span>Cross-Browser</span><span>·</span><span>STLC</span><span>·</span>
+            <span>Python</span><span>·</span><span>Bug Reporting</span><span>·</span><span>UAT</span><span>·</span>
+            <span>Manual Testing</span><span>·</span><span>Playwright</span><span>·</span><span>Postman</span><span>·</span>
+            <span>Jira</span><span>·</span><span>API Testing</span><span>·</span><span>SQL</span><span>·</span>
+            <span>Regression</span><span>·</span><span>Cross-Browser</span><span>·</span><span>STLC</span><span>·</span>
+            <span>Python</span><span>·</span><span>Bug Reporting</span><span>·</span><span>UAT</span><span>·</span>
+            <span>Manual Testing</span><span>·</span><span>Playwright</span><span>·</span><span>Postman</span><span>·</span>
+            <span>Jira</span><span>·</span><span>API Testing</span><span>·</span><span>SQL</span><span>·</span>
+            <span>Regression</span><span>·</span><span>Cross-Browser</span><span>·</span><span>STLC</span><span>·</span>
+            <span>Python</span><span>·</span><span>Bug Reporting</span><span>·</span><span>UAT</span><span>·</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 04 · PROJECTS (horizontal) ============ -->
+      <section class="projects section--dark" id="projects" data-theme="dark">
+        <div class="projects__intro">
+          <div class="section__head">
+            <span class="section__tag">04 — QA Case Studies</span>
+            <span class="section__lead">Bugs found. Quality delivered.</span>
+            <span class="section__rule"></span>
+          </div>
+          <h2 class="projects__heading"><span class="serif-it">Pieces</span> worth keeping.</h2>
+          <p class="projects__hint" data-cursor="link"><span>Scroll</span> to explore →</p>
+        </div>
+
+        <div class="projects__viewport">
+          <div class="projects__track" id="hTrack">
+
+            <!-- panel 01 — Diabetic Retinopathy AI -->
+            <article class="panel" data-index="0">
+              <span class="panel__no">04 / 01</span>
+              <div class="panel__media">
+                <video class="panel__video-demo" id="diabeticDemo" src="brain_tumor_qa_demo.mp4" autoplay muted loop
+                  playsinline preload="auto" aria-label="Diabetic Retinopathy AI project demo"></video>
+                <span class="panel__media-tint"></span>
+              </div>
+              <div class="panel__text">
+                <h3 class="panel__title"><span class="serif-it">Diabetic</span><b>Retinopathy AI</b></h3>
+                <p class="panel__meta">Team Leader &amp; AI Engineer · Prayogam · Nov 2023 – Apr 2024</p>
+                <p class="panel__desc">Deep learning diagnostic system detecting retinopathy severity (Mild, Moderate,
+                  Severe) from retinal images. Trained on 50,000 images from a 20 GB Kaggle dataset — accuracy boosted
+                  from 65% to 80%.</p>
+                <ul class="panel__tags">
+                  <li>QA Validation</li>
+                  <li>Model Testing</li>
+                  <li>Python / CNN</li>
+                </ul>
+                <a href="#" class="panel__link" data-cursor="link">View QA details<i></i></a>
+              </div>
+            </article>
+
+            <!-- panel 02 — Brain Tumor Detection QA -->
+            <article class="panel" data-index="1">
+              <span class="panel__no">04 / 02</span>
+              <div class="panel__media">
+                <video class="panel__video-demo" id="brainTumorDemo" src="chnage_teh_colu_tto_mahroon_an.mp4" autoplay
+                  muted loop playsinline preload="auto" aria-label="Brain Tumor Detection QA app demo"></video>
+                <span class="panel__media-tint"></span>
+              </div>
+              <div class="panel__text">
+                <h3 class="panel__title"><span class="serif-it">Brain Tumor</span><b>Detection QA</b></h3>
+                <p class="panel__meta">Quality Assurance · Last Year Project · Feb – Apr 2026</p>
+                <p class="panel__desc">Full QA cycle for an AI-based brain tumour detection app — functional &amp;
+                  usability testing, test case design, bug tracking, MRI dataset validation, and pre-deployment
+                  edge-case testing.</p>
+                <ul class="panel__tags">
+                  <li>Manual Testing</li>
+                  <li>AI/ML QA</li>
+                  <li>Bug Reporting</li>
+                </ul>
+                <a href="#" class="panel__link" data-cursor="link">View test report<i></i></a>
+              </div>
+            </article>
+
+            <!-- panel 03 — Saatvik Fincorp Website -->
+            <article class="panel" data-index="2">
+              <span class="panel__no">04 / 03</span>
+              <div class="panel__media">
+                <video class="panel__video-demo" id="fincorpDemo" src="fincorp_demo.mp4" autoplay muted loop playsinline
+                  preload="auto" aria-label="Saatvik Fincorp website demo"></video>
+                <span class="panel__media-tint"></span>
+              </div>
+              <div class="panel__text">
+                <h3 class="panel__title"><span class="serif-it">Fincorp</span><b>Business Website</b></h3>
+                <p class="panel__meta">Web Developer Intern · Saatvik Fincorp · May – Jul 2025</p>
+                <p class="panel__desc">Led a 3-person team to design &amp; ship a 10+ page business site from scratch.
+                  Grew traffic to 1,000+ users in month one. Delivered dark/light mode, testimonials, and responsive
+                  navigation.</p>
+                <ul class="panel__tags">
+                  <li>HTML/CSS/JS</li>
+                  <li>End-to-End QA</li>
+                  <li>Cross-Browser</li>
+                </ul>
+                <a href="#" class="panel__link" data-cursor="link">View QA report<i></i></a>
+              </div>
+            </article>
+
+            <article class="panel panel--end" data-index="4">
+              <div class="panel__cta">
+                <p class="serif-it">Test coverage matters.</p>
+                <a href="#contact" class="btn btn--ghost" data-cursor="link">Let's talk quality</a>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============ 05 · EXPERIENCE ============ -->
+      <section class="experience section" id="experience" data-theme="light">
+        <div class="section__head">
+          <span class="section__tag">05 — The Path</span>
+          <span class="section__lead">The road so far</span>
+          <span class="section__rule"></span>
+        </div>
+        <h2 class="experience__title"><span class="serif-it">A</span> deliberate <b>trajectory.</b></h2>
+
+        <ol class="timeline">
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__years">Dec 2025 — Jun 2026</span>
+            <div class="timeline__body">
+              <h3>QA Intern</h3>
+              <p class="timeline__org">Kayease · On-Site · Dec 2025 – Jun 2026</p>
+              <p class="timeline__desc">Executed comprehensive QA across three flagship products — a <strong>Sales Management ERP</strong> (covering inventory, salesman tracking, distributor workflows and accounts), a <strong>School Management System</strong> (with Student, Teacher, Staff, Admin and Super Admin roles), and a <strong>Financial CRM</strong> built for NBFCs and private lending firms, where DSA agents and sales reps manage customer pipelines, track loan progress, monitor repayments and handle end-to-end client lifecycle — tested across all role-based flows. Performed manual, functional, regression, smoke, UI, cross-browser and mobile testing on both web and Android applications. Wrote 500+ test cases and test scenarios, validated role-based permissions, business workflows and edge cases. Tested Shopify themes and e-commerce flows. Explored Playwright-based automation scripting for web application regression suites. Conducted API testing via Postman and tracked all defects in Jira through full SDLC cycles.</p>
+            </div>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__years">May – Jul 2025</span>
+            <div class="timeline__body">
+              <h3>Data Analyst Intern</h3>
+              <p class="timeline__org">Growly · Remote</p>
+              <p class="timeline__desc">Worked with 100+ datasets (up to 100 MB) using SQL, MySQL and Excel — cleaning, transforming and analysing raw business data into actionable insights. Built 3 interactive dashboards and pivot-based reports to track KPIs across sales and operations. Identified processing bottlenecks through SQL query optimisation, improving pipeline efficiency by 15%. Documented findings and presented to stakeholders. Earned a Letter of Recommendation for quality of analysis and delivery speed.</p>
+            </div>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__years">May – Jul 2025</span>
+            <div class="timeline__body">
+              <h3>Web Developer Intern</h3>
+              <p class="timeline__org">Saatvik Fincorp · On-Site</p>
+              <p class="timeline__desc">Led a 3-person team to design, develop and launch a 10+ page business website for a financial services firm — from wireframe to live deployment. Built with HTML, CSS and JavaScript; implemented dark/light mode, testimonials carousel, responsive navigation and contact forms. Grew organic traffic to 1,000+ users in month one. Conducted full end-to-end manual QA across browsers and devices before each release. Managed client communication and delivered within deadline.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ============ 06 · CERTIFICATIONS / HONOURS ============ -->
+      <section class="honours section section--dark" id="certifications" data-theme="dark">
+        <div class="section__head">
+          <span class="section__tag">06 — Honours &amp; Certification</span>
+          <span class="section__lead">In good company</span>
+          <span class="section__rule"></span>
+        </div>
+        <h2 class="honours__title"><span class="serif-it">Marks of</span> <b>recognition.</b></h2>
+
+        <div class="honours__grid">
+          <article class="cert" data-reveal>
+            <span class="cert__year">2024</span>
+            <h3>50% Merit Scholarship</h3>
+            <p>Poornima University — Merit-based undergraduate scholarship for academic excellence.</p>
+          </article>
+          <article class="cert" data-reveal>
+            <span class="cert__year">2024</span>
+            <h3>Top 10 · Prayogam</h3>
+            <p>Inter-University AI/ML competition — top 10 rank for Diabetic Retinopathy project.</p>
+          </article>
+          <article class="cert" data-reveal>
+            <span class="cert__year">2024</span>
+            <h3>Top 50 · Hack2Skill</h3>
+            <p>National-level hackathon — top 50 finish among hundreds of competing teams.</p>
+          </article>
+          <article class="cert" data-reveal>
+            <span class="cert__year">2023</span>
+            <h3>Google GDG Participant</h3>
+            <p>Google Solution Challenge — participant with GDG campus community.</p>
+          </article>
+        </div>
+
+        <div class="awards" data-reveal>
+          <span class="awards__label">Certifications</span>
+          <ul class="awards__list">
+            <li>Python <em>×2</em></li>
+            <li>MySQL &amp; PostgreSQL Basics</li>
+            <li>Excel &amp; R</li>
+            <li>DSA · Cyber-Security · Gen-AI · Prompt Engineering</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ 07 · RÉSUMÉ ============ -->
+      <section class="resume section" id="resume" data-theme="light">
+        <div class="resume__inner">
+          <div class="section__head">
+            <span class="section__tag">07 — Résumé</span>
+            <span class="section__lead">The one-page version</span>
+            <span class="section__rule"></span>
+          </div>
+          <h2 class="resume__title">
+            <span class="serif-it">The whole</span> story,<br /><b>on one page.</b>
+          </h2>
+          <p class="resume__lede">Three internships, two AI projects, and a BCA in AI &amp; Data Science — distilled
+            into a single, considered document. Take it with you.</p>
+          <div class="resume__actions">
+            <a href="resume.pdf" class="btn btn--solid" download="Aaryan-Saini-Resume.pdf" data-cursor="link">
+              Download Résumé <span class="btn__meta">PDF</span>
+            </a>
+            <a href="#contact" class="btn btn--line" data-cursor="link">Or simply say hello</a>
+          </div>
+        </div>
+        <div class="resume__sheet" aria-hidden="true">
+          <span class="resume__sheet-line" style="width:62%"></span>
+          <span class="resume__sheet-line" style="width:90%"></span>
+          <span class="resume__sheet-line" style="width:74%"></span>
+          <span class="resume__sheet-line" style="width:48%"></span>
+          <span class="resume__sheet-line resume__sheet-line--gap" style="width:80%"></span>
+          <span class="resume__sheet-line" style="width:66%"></span>
+          <span class="resume__sheet-line" style="width:88%"></span>
+        </div>
+      </section>
+
+      <!-- ============ 08 · CONTACT ============ -->
+      <section class="contact section--dark" id="contact" data-theme="dark">
+        <!-- flowing red-smoke background (animated in JS) -->
+        <div class="contact__bg" aria-hidden="true">
+          <!-- volumetric WebGL smoke; falls back to the CSS blobs below if unavailable -->
+          <canvas class="contact__smoke" id="contactSmoke"></canvas>
+          <span class="smoke smoke--1"></span>
+          <span class="smoke smoke--2"></span>
+          <span class="smoke smoke--3"></span>
+          <span class="smoke smoke--4"></span>
+          <span class="smoke smoke--5"></span>
+          <span class="contact__vignette"></span>
+        </div>
+
+        <div class="contact__inner">
+          <div class="section__head">
+            <span class="section__tag">08 — Contact</span>
+            <span class="section__lead">Let's make something</span>
+            <span class="section__rule"></span>
+          </div>
+
+          <h2 class="contact__title">Let&rsquo;s work<br /><em>together</em></h2>
+          <p class="contact__sub">Looking to hire a QA engineer, discuss a project, or just connect? I read every message personally and reply within a day.</p>
+
+          <div class="contact__grid">
+            <form class="contact__form" id="contactForm" novalidate>
+              <fieldset class="contact__intent">
+                <legend>I&rsquo;m reaching out about</legend>
+                <div class="chips" role="group" aria-label="Reason for reaching out">
+                  <button type="button" class="chip is-active" data-intent="Hiring — QA role" aria-pressed="true">Hiring</button>
+                  <button type="button" class="chip" data-intent="A project to test or build" aria-pressed="false">A Project</button>
+                  <button type="button" class="chip" data-intent="A collaboration or internship" aria-pressed="false">Collaboration</button>
+                  <button type="button" class="chip" data-intent="Just saying hello" aria-pressed="false">Just saying hello</button>
+                </div>
+              </fieldset>
+              <div class="field">
+                <label for="cName">Your name</label>
+                <input id="cName" name="name" type="text" autocomplete="name" required placeholder="Jane Beaumont" />
+              </div>
+              <div class="field">
+                <label for="cEmail">Email</label>
+                <input id="cEmail" name="email" type="email" autocomplete="email" required
+                  placeholder="jane@studio.com" />
+              </div>
+              <div class="field">
+                <label for="cMsg">Your message</label>
+                <textarea id="cMsg" name="message" rows="4" required
+                  placeholder="Tell me what you need tested, built or discussed…"></textarea>
+              </div>
+              <button type="submit" class="btn btn--solid" data-cursor="link">Send the note<span
+                  class="btn__meta">↵</span></button>
+              <p class="contact__note" id="formNote" role="status" aria-live="polite"></p>
+            </form>
+
+            <aside class="contact__aside">
+              <div class="contact__avail">
+                <span class="dot"></span>
+                <span>Open to QA &amp; Dev Opportunities — available <b>immediately</b></span>
+              </div>
+              <div class="contact__block">
+                <span class="contact__label">Email</span>
+                <a href="mailto:aaryankrsaini24@gmail.com" data-cursor="link">aaryankrsaini24@gmail.com</a>
+              </div>
+              <div class="contact__block">
+                <span class="contact__label">Elsewhere</span>
+                <div class="contact__socials">
+                  <a href="https://linkedin.com/in/Aaryan-Saini" target="_blank" data-cursor="link" class="social-link">
+                    <span class="social-link__icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </span>
+                    LinkedIn ↗
+                  </a>
+                  <a href="https://github.com/AaryanSaini" target="_blank" data-cursor="link" class="social-link">
+                    <span class="social-link__icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    </span>
+                    GitHub ↗
+                  </a>
+                  <a href="tel:+919625511881" data-cursor="link" class="social-link">
+                    <span class="social-link__icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    </span>
+                    +91 96255 11881 ↗
+                  </a>
+                </div>
+              </div>
+              <div class="contact__block">
+                <span class="contact__label">Studio</span>
+                <p>Jaipur, Rajasthan · <b data-clock>--:--:--</b><br />Open to remote &amp; on-site roles</p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /.reveal -->
+  </main>
+
+  <!-- ============ FOOTER (reveal background layer) ============ -->
+  <footer class="footer" id="footer">
+    <div class="footer__marquee" aria-hidden="true">
+      <div class="footer__marquee-track">
+        <span>Available for select projects</span><span class="footer__star">✦</span>
+        <span>Written in light, built in code</span><span class="footer__star">✦</span>
+        <span>Available for select projects</span><span class="footer__star">✦</span>
+        <span>Written in light, built in code</span><span class="footer__star">✦</span>
+      </div>
+    </div>
+
+    <div class="footer__big">
+      <h2 data-split-foot>AARYAN KUMAR<br />SAINI</h2>
+    </div>
+
+    <div class="footer__cols">
+      <div class="footer__col">
+        <span class="footer__label">Sitemap</span>
+        <a href="#about" data-cursor="link">About</a>
+        <a href="#projects" data-cursor="link">Work</a>
+        <a href="#experience" data-cursor="link">Experience</a>
+        <a href="#resume" data-cursor="link">Résumé</a>
+      </div>
+      <div class="footer__col">
+        <span class="footer__label">Elsewhere</span>
+        <a href="https://linkedin.com/in/Aaryan-Saini" target="_blank" data-cursor="link">LinkedIn</a>
+        <a href="https://github.com/AaryanSaini" target="_blank" data-cursor="link">GitHub</a>
+        <a href="tel:+919625511881" data-cursor="link">+91 96255 11881</a>
+      </div>
+      <div class="footer__col">
+        <span class="footer__label">Say hello</span>
+        <a href="mailto:aaryankrsaini24@gmail.com" data-cursor="link">aaryankrsaini24@gmail.com</a>
+        <span class="footer__muted">Jaipur, Rajasthan · <b data-clock>--:--:--</b></span>
+      </div>
+      <div class="footer__col footer__col--top">
+        <button class="footer__totop" id="toTop" data-cursor="link">
+          <span>Back to top</span><i>↑</i>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <span>© 2026 Aaryan Kumar Saini</span>
+      <span>Built with logic &amp; care</span>
+      <span>QA Engineer &amp; Developer</span>
+    </div>
+  </footer>
+
+  <!-- Failsafe: never leave the page stuck behind the preloader if a CDN is blocked -->
+  <script>
+    setTimeout(function () {
+      if (document.body.getAttribute("data-loading") === "true") {
+        document.body.removeAttribute("data-loading");
+        document.body.classList.add("is-ready");
+        var p = document.getElementById("preloader");
+        if (p) p.style.display = "none";
+        if (!(window.gsap && window.ScrollTrigger)) document.documentElement.classList.add("no-js");
+      }
+    }, 8000);
+  </script>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="main.js" defer></script>
+</body>
+
+</html>
