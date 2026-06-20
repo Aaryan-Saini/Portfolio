@@ -150,7 +150,21 @@
   function wireFooterReveal() {
     const footer = document.getElementById("footer");
     const contact = document.getElementById("contact");
+    const page = document.getElementById("page");
     if (!footer || REDUCE) return;
+
+    // Dynamically set page margin-bottom to match footer height
+    if (page) {
+      const setFooterMargin = () => {
+        page.style.marginBottom = footer.offsetHeight + "px";
+      };
+      setFooterMargin();
+      window.addEventListener("resize", setFooterMargin, { passive: true });
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(setFooterMargin);
+      }
+    }
+
     const big = footer.querySelector(".footer__big");
     const cols = footer.querySelector(".footer__cols");
     const base = footer.querySelector(".footer__base");
