@@ -1,0 +1,4 @@
+# nested old-site repo + local screen recording (not part of the deploy)
+/Portfolio/
+/Recording*.mp4
+node_modules/
