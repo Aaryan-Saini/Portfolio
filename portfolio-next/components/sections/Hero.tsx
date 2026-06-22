@@ -1,21 +1,30 @@
-import CrystalCursor from "@/components/ui/crystal-cursor";
+import SilkShader from "@/components/ui/bloodline";
 
 export default function Hero() {
   return (
     <section className="hero" id="hero">
-      {/* hero background: glowing gold crystalline field (ambient + cursor trail
-          + click-to-shatter) on a themed ink base */}
-      <CrystalCursor
-        overlay
-        transparent={false}
-        ambient
-        glow={7}
-        background="#16100f"
-        crystalColor="rgba(220, 196, 138, 0.95)"
-        shatterColor="rgba(246, 230, 191, 1)"
-        trailColor="rgba(22, 16, 15, 0.06)"
-        style={{ zIndex: 0 }}
-      />
+      {/* Blood-silk WebGL backdrop — animated crimson silk. Opaque, so it
+          becomes the hero background (covering the section gradient). Sits at
+          z-index 0 behind the core (1), aura (0) and content grid (2);
+          pointer-events:none keeps the hero clickable. `invert` forces the dark
+          treatment so the light hero copy stays legible. The radial ink scrim
+          lifts text contrast over the busy weave. */}
+      <div
+        aria-hidden="true"
+        style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}
+      >
+        <SilkShader invert />
+        <span
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background:
+              "radial-gradient(72% 60% at 50% 46%, rgba(22,16,15,0.55) 0%, rgba(22,16,15,0.14) 50%, transparent 78%)",
+          }}
+        />
+      </div>
+
       {/* shared "core" — the glowing heart carried over from the loader */}
       <div className="hero__core" data-hero-core aria-hidden="true" />
       <div className="hero__aura" aria-hidden="true" />

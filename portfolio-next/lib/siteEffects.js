@@ -40,7 +40,7 @@ export default function initSiteEffects() {
     body.classList.add("is-ready");
     const pre = $("#preloader");
     if (pre) pre.style.display = "none";
-    wireMenu(); wireClock(); wireForm(); wireToTop(); wireMedia(); wireIntent(); wireFooterReveal(); wirePanelVideos();
+    wireMenu(); wireClock(); wireForm(); wireToTop(); wireMedia(); wireIntent(); wireUsedby(); wireFooterReveal(); wirePanelVideos();
     contactSmokeGL(); // GSAP-independent; smoke still renders without it
     footerCometGL();  // footer aurora-comet shader — always-on
     heroSmokeGL(); wireAudioUI();
@@ -110,6 +110,55 @@ export default function initSiteEffects() {
       msg.focus();
       try { const end = msg.value.length; msg.setSelectionRange(end, end); } catch (e) { }
     }));
+  }
+
+  // Brand strip — hover/focus a logo and the serif headline morphs to it,
+  // reverting to the default phrase on leave. Toggles the .is-out / .is-pre
+  // classes the CSS animates. Pure DOM, so it also runs in the no-GSAP path.
+  function wireUsedby() {
+    const grid = $("#usedbyGrid");
+    const morph = $("#usedbyMorph");
+    if (!grid || !morph) return;
+    const chips = $$(".usedby__chip", grid);
+    if (!chips.length) return;
+
+    const DEFAULT = (morph.textContent || "").trim();
+    let current = DEFAULT;
+    let swap = 0;
+
+    const morphTo = (text) => {
+      if (text === current) return;
+      current = text;
+      if (REDUCE) { morph.textContent = text; return; }
+      clearTimeout(swap);
+      morph.classList.remove("is-pre");
+      morph.classList.add("is-out");           // current text lifts up + fades
+      swap = window.setTimeout(() => {
+        morph.textContent = text;
+        morph.classList.add("is-pre");         // drop below instantly (no transition)
+        morph.classList.remove("is-out");
+        void morph.offsetWidth;                // commit the pre-state…
+        morph.classList.remove("is-pre");      // …then rise into place
+      }, 170);
+    };
+
+    chips.forEach((chip) => {
+      const brand = chip.dataset.brand;
+      const on = () => {
+        grid.classList.add("is-hovering");
+        chips.forEach((c) => c.classList.toggle("is-active", c === chip));
+        if (brand) morphTo(brand);
+      };
+      const off = () => {
+        grid.classList.remove("is-hovering");
+        chip.classList.remove("is-active");
+        morphTo(DEFAULT);
+      };
+      chip.addEventListener("pointerenter", on);
+      chip.addEventListener("pointerleave", off);
+      chip.addEventListener("focus", on);
+      chip.addEventListener("blur", off);
+    });
   }
 
   // If a remote image (picsum) fails, fade it out so the elegant duotone
@@ -451,7 +500,7 @@ export default function initSiteEffects() {
     });
 
     /* ---- Always-on wiring ---- */
-    wireMenu(); wireClock(); wireForm(); wireToTop(); wireMedia(); wireIntent(); wireFooterReveal(); wirePanelVideos();
+    wireMenu(); wireClock(); wireForm(); wireToTop(); wireMedia(); wireIntent(); wireUsedby(); wireFooterReveal(); wirePanelVideos();
     wireCursor(); wireReveals(); wireCounters();
     footerCometGL(); // footer aurora-comet shader
     heroSmokeGL(); wireAudioUI();

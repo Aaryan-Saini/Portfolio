@@ -1,6 +1,28 @@
+import { RevealWaveImage } from "@/components/ui/reveal-wave-image";
+import { asset } from "@/lib/asset";
+
 export default function Skills() {
   return (
     <section className="skills section section--dark" id="skills" data-theme="dark">
+      {/* Interactive reveal-wave backdrop — animated B&W dither that reveals
+          colour under the cursor. Sits behind the content (z-index 0); a wine
+          scrim keeps the copy legible. Content is made pointer-transparent in
+          CSS so the reveal tracks the cursor across the whole section. */}
+      <div className="skills__bg" aria-hidden="true">
+        <RevealWaveImage
+          src={asset("/forest.jpg")}
+          className="skills__reveal"
+          waveSpeed={0.2}
+          waveFrequency={0.7}
+          waveAmplitude={0.4}
+          revealRadius={0.45}
+          revealSoftness={1}
+          pixelSize={2}
+          mouseRadius={0.4}
+        />
+        <span className="skills__bg-scrim" />
+      </div>
+
       <div className="section__head">
         <span className="section__tag">03 — Capabilities</span>
         <span className="section__lead">QA · Data · Code</span>

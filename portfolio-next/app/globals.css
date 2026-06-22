@@ -1080,6 +1080,39 @@ body.nav-open .overlay-nav__list a {
 }
 .skills {
   background: var(--wine-800);
+  overflow: hidden;
+}
+/* Skills — interactive reveal-wave backdrop (RevealWaveImage). The B&W dithered
+   forest animates continuously and reveals colour on hover; the wine scrim keeps
+   the copy readable. Content is lifted above the canvas and made pointer-
+   transparent so the reveal tracks the cursor across the whole section. */
+.skills__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.skills__reveal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.skills__bg-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(38, 10, 14, 0.66) 0%,
+    rgba(38, 10, 14, 0.8) 50%,
+    rgba(33, 8, 11, 0.9) 100%
+  );
+}
+.skills > *:not(.skills__bg) {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
 }
 .skills__title {
   font-family: var(--sans);
@@ -2139,12 +2172,20 @@ body.nav-open .overlay-nav__list a {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  background: var(--parch);
-  color: var(--ink);
-  --line: rgba(22, 16, 15, .16);
-  --muted: rgba(22, 16, 15, .55);
-  --fs-footmark: clamp(2rem, min(9.5vw, 17vh), 9.5rem);
+  background: var(--ink);
+  color: var(--parch);
+  --line: rgba(243, 234, 216, .16);
+  --muted: rgba(243, 234, 216, .55);
+  --fs-footmark: clamp(2.2rem, min(10.5vw, 18.5vh), 10.8rem);
   padding-top: 0;
+}
+/* Animated GLSL-hills backdrop — fills the (now dark) footer, behind content. */
+.footer__hills {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 .footer__marquee,
 .footer__head,
@@ -2179,6 +2220,9 @@ body.nav-open .overlay-nav__list a {
   max-width: var(--maxw);
   margin-inline: auto;
   padding-inline: var(--pad);
+  /* taller footer — generous breathing room above the content (and the
+     animated hills show through the extra space) */
+  padding-block: clamp(3rem, 8vh, 7rem) clamp(1.5rem, 3vh, 2.5rem);
 }
 .footer__marquee {
   overflow: hidden;
@@ -2196,7 +2240,7 @@ body.nav-open .overlay-nav__list a {
   font-family: var(--serif);
   font-style: italic;
   font-size: clamp(1.4rem, 3vw, 2.4rem);
-  color: rgba(22, 16, 15, .72);
+  color: rgba(243, 234, 216, .72);
   white-space: nowrap;
 }
 .footer__star {
