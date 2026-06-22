@@ -253,6 +253,8 @@ export const RevealWaveImage = ({
 }: RevealWaveImageProps) => {
   const [isMouseInCanvas, setIsMouseInCanvas] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+  const [active, setActive] = useState(true);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const img = new Image();
@@ -262,14 +264,41 @@ export const RevealWaveImage = ({
     };
   }, [src]);
 
+  // Pause R3F's render loop (frameloop="never") while the section is scrolled
+  // out of view or the tab is hidden, so the WebGL work doesn't compete with
+  // scrolling elsewhere on the page.
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    let inView = true;
+    const sync = () => setActive(inView && !document.hidden);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0 },
+    );
+    io.observe(el);
+    const onVisibility = () => sync();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
   return (
     <div
+      ref={wrapRef}
       className={`relative overflow-hidden ${className}`}
       onMouseEnter={() => setIsMouseInCanvas(true)}
       onMouseLeave={() => setIsMouseInCanvas(false)}
     >
       {aspectRatio !== null && (
         <Canvas
+          frameloop={active ? "always" : "never"}
+          dpr={[1, 1.5]}
           style={{
             width: "100%",
             height: "100%",

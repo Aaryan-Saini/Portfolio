@@ -187,7 +187,7 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
     const startTime = Date.now();
 
     const handleResize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = canvas.clientWidth * dpr;
       canvas.height = canvas.clientHeight * dpr;
     };
@@ -197,7 +197,7 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
 
     const handleMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       mouse.x = (e.clientX - rect.left) * dpr;
       mouse.y = canvas.height - (e.clientY - rect.top) * dpr;
     };
@@ -220,7 +220,9 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let animationId = 0;
-    const render = () => {
+    let visible = true;
+
+    const draw = () => {
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(iResolutionLocation, canvas.width, canvas.height);
       gl.uniform1f(iTimeLocation, (Date.now() - startTime) / 1000);
@@ -228,13 +230,47 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
       gl.uniform2f(iClickPosLocation, clickPos.x, clickPos.y);
       gl.uniform1f(iClickTimeLocation, clickTime);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      if (!reduce) animationId = requestAnimationFrame(render);
+    };
+    const tick = () => {
+      draw();
+      animationId = requestAnimationFrame(tick);
+    };
+    const start = () => {
+      if (!animationId && visible && !reduce && !document.hidden) {
+        animationId = requestAnimationFrame(tick);
+      }
+    };
+    const stop = () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = 0;
+      }
     };
 
-    render();
+    // Pause the full-screen shader while the hero is scrolled out of view or the
+    // tab is hidden — keeps scrolling through the rest of the page smooth.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) start();
+        else stop();
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
+    const onVisibility = () => {
+      if (document.hidden) stop();
+      else start();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    if (reduce) draw();
+    else start();
 
     return () => {
-      cancelAnimationFrame(animationId);
+      stop();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", handleResize);
       canvas.removeEventListener("mousemove", handleMove);
       canvas.removeEventListener("mousedown", handleDown);
