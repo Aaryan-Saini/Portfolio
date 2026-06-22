@@ -1,4 +1,5 @@
 import CursorLayer from "@/components/CursorLayer";
+import Fireworks from "@/components/Fireworks";
 import Preloader from "@/components/Preloader";
 import Chrome from "@/components/Chrome";
 import OverlayNav from "@/components/OverlayNav";
@@ -21,6 +22,7 @@ export default function Home() {
       </a>
 
       <CursorLayer />
+      <Fireworks />
       <Preloader />
       <Chrome />
       <OverlayNav />

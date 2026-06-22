@@ -79,6 +79,18 @@ const getFragmentShader = (invert: boolean) => `
     ${invert ? `
       c = pow(c, 0.3 / vec3(0.52, 0.5, 0.4));
       c = 1.0 - c;
+
+      /* --- crimson glow ---------------------------------------------------
+         Make the visible silk "parts" glow: recolour the luminous ribbons
+         toward a hot blood-red and add an additive bloom so the bright
+         streaks read as emitted light, while the dark weave stays deep. */
+      float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));
+      vec3  glowCol = vec3(1.0, 0.07, 0.14);          // hotter, more saturated crimson
+      float glow = smoothstep(0.05, 0.58, lum);       // wider band of streaks glow
+      c = mix(c, c * glowCol * 2.0, glow * 0.95);     // recolour ribbons hard crimson
+      c += glowCol * pow(glow, 1.35) * 1.75;          // stronger additive neon bloom
+      c += vec3(0.5, 0.02, 0.045) * glow;             // bigger red lift so it blazes
+      c = clamp(c, 0.0, 1.0);
     ` : `
       c = pow(c, vec3(0.52, 0.5, 0.4));
     `}
@@ -186,18 +198,29 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
     let clickTime = 0;
     const startTime = Date.now();
 
-    const handleResize = () => {
+    // Size the drawing buffer to the element. Clamp to >=1 so a 0×0 mount
+    // (e.g. behind the preloader, before layout settles) never yields an empty
+    // viewport that the GPU silently keeps. Returns true if the size changed.
+    const sizeCanvas = () => {
+      // Cap DPR — a full-viewport fragment shader at native retina DPR (2–3×)
+      // renders 4–9× the pixels for no visible gain; 1.5 keeps it crisp + cheap.
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = canvas.clientWidth * dpr;
-      canvas.height = canvas.clientHeight * dpr;
+      const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
+      const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        return true;
+      }
+      return false;
     };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
+    sizeCanvas();
+    window.addEventListener("resize", sizeCanvas);
 
     const handleMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const dpr = window.devicePixelRatio || 1;
       mouse.x = (e.clientX - rect.left) * dpr;
       mouse.y = canvas.height - (e.clientY - rect.top) * dpr;
     };
@@ -220,8 +243,7 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let animationId = 0;
-    let visible = true;
-
+    let inView = true;
     const draw = () => {
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(iResolutionLocation, canvas.width, canvas.height);
@@ -231,47 +253,46 @@ export default function SilkShader({ className, style, invert }: SilkShaderProps
       gl.uniform1f(iClickTimeLocation, clickTime);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
-    const tick = () => {
+    const loop = () => {
       draw();
-      animationId = requestAnimationFrame(tick);
+      // Stop the loop when the hero is scrolled off-screen or the tab is hidden
+      // — no point burning the GPU on a full-screen shader nobody can see.
+      animationId = !reduce && inView && !document.hidden ? requestAnimationFrame(loop) : 0;
     };
-    const start = () => {
-      if (!animationId && visible && !reduce && !document.hidden) {
-        animationId = requestAnimationFrame(tick);
-      }
-    };
-    const stop = () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-        animationId = 0;
-      }
+    const ensureRunning = () => {
+      if (reduce) { draw(); return; }            // reduced motion → one still frame
+      if (!animationId && inView && !document.hidden) animationId = requestAnimationFrame(loop);
     };
 
-    // Pause the full-screen shader while the hero is scrolled out of view or the
-    // tab is hidden — keeps scrolling through the rest of the page smooth.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        visible = entry.isIntersecting;
-        if (visible) start();
-        else stop();
-      },
-      { threshold: 0 },
-    );
-    io.observe(canvas);
-    const onVisibility = () => {
-      if (document.hidden) stop();
-      else start();
-    };
-    document.addEventListener("visibilitychange", onVisibility);
+    ensureRunning();
 
-    if (reduce) draw();
-    else start();
+    // Pause/resume when the hero enters/leaves the viewport.
+    const io =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver((es) => { inView = es[0].isIntersecting; ensureRunning(); }, { rootMargin: "120px" })
+        : null;
+    io?.observe(canvas);
+    const onVis = () => { if (!document.hidden) ensureRunning(); };
+    document.addEventListener("visibilitychange", onVis);
+
+    // The canvas can mount at 0×0 and only gain size once the preloader lifts /
+    // layout settles. A one-shot size would leave it blank forever (and the
+    // reduced-motion / paused paths don't loop), so observe the element and
+    // re-size + repaint the moment it actually has dimensions.
+    const repaint = () => {
+      sizeCanvas();
+      if (!animationId) draw();
+    };
+    const ro =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(repaint) : null;
+    ro?.observe(canvas);
 
     return () => {
-      stop();
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animationId);
+      io?.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+      ro?.disconnect();
+      window.removeEventListener("resize", sizeCanvas);
       canvas.removeEventListener("mousemove", handleMove);
       canvas.removeEventListener("mousedown", handleDown);
       canvas.removeEventListener("mouseup", handleUp);

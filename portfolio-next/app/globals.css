@@ -35,6 +35,7 @@ html.lenis body {
   --line: rgba(243, 234, 216, 0.16);
   --serif: var(--font-serif, "Cormorant Garamond"), Georgia, serif;
   --sans: var(--font-sans, "Space Grotesk"), system-ui, sans-serif;
+  --body: var(--font-body, "Roboto"), system-ui, sans-serif;
   --mono: var(--font-mono, "Space Mono"), ui-monospace, monospace;
   --tech: var(--font-tech, "Chakra Petch"), var(--font-mono, "Space Mono"), ui-monospace, monospace;
   --fs-mega: clamp(2.8rem, 1rem + 9vw, 10rem);
@@ -73,13 +74,21 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 body {
-  font-family: var(--sans);
+  font-family: var(--body);
+  font-weight: 300; /* Roboto Light — base reading weight for running copy */
   background: var(--bg);
   color: var(--fg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+/* Keep inline emphasis bold against the lighter Roboto base — the UA `bolder`
+   keyword only lifts 300 → 400, which reads as un-emphasised. Headings and
+   labels set their own family/weight, so they're unaffected. */
+b,
+strong {
+  font-weight: 700;
 }
 body[data-loading="true"] {
   overflow: hidden;
@@ -192,20 +201,17 @@ html {
       rgba(200, 164, 92, 0) 72%);
   filter: blur(2px);
   mix-blend-mode: screen;
-  will-change: transform, filter;
+  will-change: transform;
   animation: cursorGlowPulse 2.6s ease-in-out infinite;
   transition: width .35s var(--ease), height .35s var(--ease);
 }
+/* Pulse on opacity only — animating filter:blur() regenerates a blurred bitmap
+   every frame (a full-screen composite via mix-blend-mode:screen); opacity is a
+   cheap compositor-only property and reads near-identically. */
 @keyframes cursorGlowPulse {
   0%,
-  100% {
-    opacity: .9;
-    filter: blur(2px);
-  }
-  50% {
-    opacity: 1;
-    filter: blur(3.5px);
-  }
+  100% { opacity: .82; }
+  50%  { opacity: 1; }
 }
 .cursorx.is-hover .cursorx__core {
   width: 14px;
@@ -2172,21 +2178,22 @@ body.nav-open .overlay-nav__list a {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  background: var(--ink);
-  color: var(--parch);
-  --line: rgba(243, 234, 216, .16);
-  --muted: rgba(243, 234, 216, .55);
+  background: #e8ddc6;            /* solid beige backdrop (animated ridges removed) */
+  color: var(--ink);             /* dark text to read on the light ground */
+  --line: rgba(22, 16, 15, .18);
+  --muted: rgba(22, 16, 15, .58);
   --fs-footmark: clamp(2.2rem, min(10.5vw, 18.5vh), 10.8rem);
   padding-top: 0;
 }
-/* Animated GLSL-hills backdrop — fills the (now dark) footer, behind content. */
-.footer__hills {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
+/* CLS guard: the fixed footer (z-0, below the fold, behind #page) is never on
+   screen during load, but its text reflows when the web fonts swap in — growing
+   the bottom-anchored box and registering as a layout shift on .footer__hills.
+   Hold it steady (visibility only — it keeps its layout box, so nothing jumps)
+   until fonts settle; .fonts-ready is added on document.fonts.ready. The no-js /
+   graceful-degradation path always shows it. Purely invisible: visibility flips
+   long before the footer is ever scrolled into view. */
+html:not(.fonts-ready) .footer { visibility: hidden; }
+html.no-js .footer { visibility: visible; }
 .footer__marquee,
 .footer__head,
 .footer__cols,
@@ -2240,7 +2247,7 @@ body.nav-open .overlay-nav__list a {
   font-family: var(--serif);
   font-style: italic;
   font-size: clamp(1.4rem, 3vw, 2.4rem);
-  color: rgba(243, 234, 216, .72);
+  color: rgba(22, 16, 15, .72);
   white-space: nowrap;
 }
 .footer__star {
@@ -2334,37 +2341,55 @@ body.nav-open .overlay-nav__list a {
   align-items: center;
   gap: clamp(.55rem, 1.2vw, .9rem);
 }
-.footer__social {
+/* Footer action pills — frosted "glass" tuned for the LIGHT parchment footer.
+   A translucent white surface + bright top bevel + soft drop shadow reads as
+   glass even on the flat ground; dark ink labels and oxblood icons keep AA
+   contrast (the old recipe used translucent ink + parch text, built for the
+   dark footer, which went muddy grey on the light ground). Shared rule keeps
+   the socials and "back to top" identical. */
+.footer__social,
+.footer__totop {
   display: inline-flex;
   align-items: center;
   gap: .6rem;
-  padding: .72rem 1.15rem;
+  padding: .72rem 1.2rem;
   border-radius: 100px;
   font-family: var(--mono);
   font-size: var(--fs-label);
   letter-spacing: var(--tr-label);
   text-transform: uppercase;
-  color: var(--parch);
-  background: linear-gradient(135deg, rgba(22, 16, 15, 0.55), rgba(22, 16, 15, 0.3));
-  border: 1px solid rgba(243, 234, 216, 0.18);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  backdrop-filter: blur(10px) saturate(140%);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(243, 234, 216, 0.12);
-  transition: transform .35s var(--ease), background .35s, border-color .35s, color .35s, box-shadow .35s;
+  color: var(--ink);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.24));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 6px 20px rgba(22, 16, 15, 0.10),
+    0 1px 2px rgba(22, 16, 15, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px rgba(22, 16, 15, 0.05);
+  transition: transform .22s var(--ease), background .22s, border-color .22s, color .22s, box-shadow .22s;
 }
-.footer__social:hover {
-  transform: translateY(-3px);
-  border-color: rgba(200, 164, 92, 0.8);
-  color: var(--gold-soft);
-  background: linear-gradient(135deg, rgba(22, 16, 15, 0.6), rgba(22, 16, 15, 0.42));
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 16px rgba(200, 164, 92, 0.2), inset 0 1px 0 rgba(243, 234, 216, 0.18);
+.footer__social:hover,
+.footer__totop:hover {
+  transform: translateY(-2px);
+  color: var(--wine-700);
+  border-color: rgba(110, 79, 27, 0.4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.46));
+  box-shadow:
+    0 12px 30px rgba(22, 16, 15, 0.15),
+    0 0 0 1px rgba(110, 79, 27, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 .footer__social-icon {
   display: inline-flex;
   width: 1.05rem;
   height: 1.05rem;
-  color: var(--gold);
-  transition: color .35s var(--ease);
+  color: var(--wine-700);
+  transition: color .22s var(--ease);
+}
+.footer__social:hover .footer__social-icon {
+  color: #6e4f1b;
 }
 .footer__social-icon svg {
   width: 100%;
@@ -2374,34 +2399,9 @@ body.nav-open .overlay-nav__list a {
 .footer__social-label {
   line-height: 1;
 }
-.footer__totop {
-  display: inline-flex;
-  align-items: center;
-  gap: .7rem;
-  font-family: var(--mono);
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  color: var(--parch);
-  padding: .72rem 1.25rem;
-  border-radius: 100px;
-  background: linear-gradient(135deg, rgba(22, 16, 15, 0.55), rgba(22, 16, 15, 0.3));
-  border: 1px solid rgba(243, 234, 216, 0.18);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  backdrop-filter: blur(10px) saturate(140%);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(243, 234, 216, 0.12);
-  transition: transform .35s var(--ease), background .35s, border-color .35s, color .35s, box-shadow .35s;
-}
 .footer__totop i {
   font-style: normal;
-  transition: transform .35s var(--ease);
-}
-.footer__totop:hover {
-  transform: translateY(-3px);
-  border-color: rgba(200, 164, 92, 0.8);
-  color: var(--gold-soft);
-  background: linear-gradient(135deg, rgba(22, 16, 15, 0.6), rgba(22, 16, 15, 0.42));
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 16px rgba(200, 164, 92, 0.2), inset 0 1px 0 rgba(243, 234, 216, 0.18);
+  transition: transform .22s var(--ease);
 }
 .footer__totop:hover i {
   transform: translateY(-3px);
@@ -2468,6 +2468,12 @@ body.nav-open .overlay-nav__list a {
 .no-js #preloader {
   display: none;
 }
+/* Skip the preloader on same-tab reloads: an inline body-start script adds
+   .ak-skip-loader when the sessionStorage flag is set, hiding the preloader
+   before first paint (no flash) and releasing the scroll lock until the JS
+   removes data-loading. A new tab is a fresh session, so the preloader plays. */
+html.ak-skip-loader #preloader { display: none !important; }
+html.ak-skip-loader body[data-loading="true"] { overflow-x: hidden; overflow-y: auto; height: auto; }
 .no-js .about__body .word__in {
   color: var(--wine-700);
 }

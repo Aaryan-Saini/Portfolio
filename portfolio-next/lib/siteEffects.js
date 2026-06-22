@@ -23,6 +23,22 @@ export default function initSiteEffects() {
   const body = document.body;
   root.classList.remove("no-js");
 
+  // Reveal the off-screen fixed footer only once web fonts have settled, so its
+  // late font-swap reflow (behind the preloader, below the fold) isn't recorded
+  // as a layout shift (CLS). Paired with the `.fonts-ready` CSS guard in
+  // globals.css. No visual effect — the footer isn't on screen during load.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => root.classList.add("fonts-ready"));
+  } else {
+    root.classList.add("fonts-ready");
+  }
+
+  // Preloader plays once per tab session: it runs on the first load of a tab
+  // (including each new tab) and is skipped on same-tab reloads. Captured here,
+  // BEFORE runPreloader sets the flag, so heroIntro can match the timing.
+  let seenSession = false;
+  try { seenSession = !!sessionStorage.getItem("ak_loaded"); } catch (e) {}
+
   const REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const HAS_GSAP = !!(gsap && ScrollTrigger);
 
@@ -318,22 +334,38 @@ export default function initSiteEffects() {
     let visible = false, hover = false;
     const trail = [];                                 // recent points {x,y}
     const TRAIL_MAX = 24;
+    const now = () => (window.performance && performance.now ? performance.now() : Date.now());
+
+    // The trail canvas is a full-viewport, screen-blended layer; redrawing it
+    // every frame forever (even with the pointer dead still) is the cursor's
+    // biggest cost. So the rAF loop runs only while there's something to
+    // animate — pointer moving or trail still receding — and parks itself once
+    // settled. The sharp core + soft glow are CSS elements, so the cursor stays
+    // fully visible at rest; only the comet stops being recomputed.
+    let rafId = 0;
+    let lastMove = 0;
+    const wake = () => { if (!rafId) rafId = requestAnimationFrame(frame); };
 
     addEventListener("mousemove", (e) => {
       mx = e.clientX; my = e.clientY;
+      lastMove = now();
       // zero-lag core: write transform directly each move
       core.style.transform = "translate3d(" + mx + "px," + my + "px,0) translate(-50%,-50%)";
       if (!visible) { visible = true; wrap.style.opacity = "1"; }
+      wake();
     }, { passive: true });
 
     // NB: inputs/textarea deliberately excluded — the cursor stays its normal
     // state over the form instead of swelling into the hover ring.
     const isInteractive = (t) => t && t.closest("a, button, [data-cursor='link']");
-    document.addEventListener("mouseover", (e) => { if (isInteractive(e.target)) { wrap.classList.add("is-hover"); hover = true; } });
-    document.addEventListener("mouseout", (e) => { if (isInteractive(e.target)) { wrap.classList.remove("is-hover"); hover = false; } });
+    document.addEventListener("mouseover", (e) => { if (isInteractive(e.target)) { wrap.classList.add("is-hover"); hover = true; wake(); } });
+    document.addEventListener("mouseout", (e) => { if (isInteractive(e.target)) { wrap.classList.remove("is-hover"); hover = false; wake(); } });
     document.addEventListener("mouseleave", () => { wrap.style.opacity = "0"; });
 
     function frame() {
+      rafId = 0;
+      const idle = now() - lastMove > 120;             // pointer hasn't moved recently
+
       // pointer velocity
       const vx = mx - px, vy = my - py; px = mx; py = my;
       const speed = Math.hypot(vx, vy);
@@ -342,9 +374,9 @@ export default function initSiteEffects() {
       gx += (mx - gx) * 0.3; gy += (my - gy) * 0.3;
       glow.style.transform = "translate3d(" + gx + "px," + gy + "px,0) translate(-50%,-50%)";
 
-      // record comet path
-      trail.push({ x: mx, y: my });
-      if (trail.length > TRAIL_MAX) trail.shift();
+      // record comet path — while idle, drain it so the ribbon recedes, then stops
+      if (idle) { if (trail.length) trail.shift(); }
+      else { trail.push({ x: mx, y: my }); if (trail.length > TRAIL_MAX) trail.shift(); }
 
       ctx.clearRect(0, 0, innerWidth, innerHeight);
       ctx.globalCompositeOperation = "lighter";
@@ -375,9 +407,12 @@ export default function initSiteEffects() {
       ctx.drawImage(sprite, mx - hs / 2, my - hs / 2, hs, hs);
       ctx.globalAlpha = 1;
 
-      requestAnimationFrame(frame);
+      // Park the loop once everything has settled (no motion, ribbon gone, glow
+      // caught up). It restarts instantly on the next mousemove/hover via wake().
+      const settled = idle && n === 0 && Math.abs(mx - gx) < 0.5 && Math.abs(my - gy) < 0.5;
+      if (settled || document.hidden) { ctx.clearRect(0, 0, innerWidth, innerHeight); return; }
+      rafId = requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
   }
 
   /* ----------------------------------------------------------
@@ -485,7 +520,11 @@ export default function initSiteEffects() {
 
     /* ---- Lenis smooth scroll ---- */
     if (!REDUCE) {
-      const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.45, smoothWheel: true });
+      // lerp 0.08 + wheelMultiplier 0.45 made scrolling feel floaty and
+      // under-responsive (each wheel notch travelled <half normal). Snappier
+      // catch-up + near-normal wheel travel reads much smoother without losing
+      // the eased glide. (Integration is correct — keep Lenis, not ScrollSmoother.)
+      const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
       window.__lenis = lenis;
       lenis.on("scroll", ST.update);
       gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -688,7 +727,30 @@ export default function initSiteEffects() {
      dashed targeting console · zoom-out reveal handoff into the site. */
   function runPreloader(gsap, done) {
     const pre = $("#preloader");
-    if (!pre || REDUCE) { if (pre) pre.style.display = "none"; done(); return; }
+    if (!pre || REDUCE || seenSession) { if (pre) pre.style.display = "none"; done(); return; }
+    // First load of this tab session — remember it so same-tab reloads skip the
+    // preloader (a new tab is a fresh session and plays it again).
+    try { sessionStorage.setItem("ak_loaded", "1"); } catch (e) {}
+
+    /* —— real page-load gate ————————————————————————————————————————
+       The counter is no longer a fixed timer: it eases to ~90%, then HOLDS
+       until the whole page has actually finished loading (every image, video
+       and webfont), so we never reveal an unfinished page. `whenReady` fires
+       once window's `load` event AND document.fonts.ready have both resolved;
+       a hard cap downstream keeps a flaky asset from stranding the loader. */
+    let _ready = false;
+    const _readyCbs = [];
+    const markReady = () => { if (_ready) return; _ready = true; _readyCbs.splice(0).forEach((fn) => fn()); };
+    const whenReady = (cb) => { if (_ready) cb(); else _readyCbs.push(cb); };
+    {
+      let loaded = document.readyState === "complete";
+      let fontsDone = false;
+      const check = () => { if (loaded && fontsDone) markReady(); };
+      if (!loaded) window.addEventListener("load", () => { loaded = true; check(); }, { once: true });
+      const fontsP = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+      fontsP.then(() => { fontsDone = true; check(); });
+      check();
+    }
 
     const bg = $(".ld-bg", pre);
     const fg = $(".ld-fg", pre);
@@ -760,30 +822,50 @@ export default function initSiteEffects() {
         .to(pre, { opacity: 0, scale: 1.12, duration: 0.9, ease: "power2.inOut", transformOrigin: "50% 46%" }, 0.2);
     };
 
-    /* —— intro: rise the HUD in, type, then run the counter 0 → 100 —— */
+    /* —— intro: rise the HUD in, type, then run the load-gated counter —— */
     gsap.set(rise, { opacity: 0, y: 16 });
     typeNext();
     const prog = { v: 0 };
     let mile = -1;
+    const paint = () => {
+      const n = Math.round(prog.v);
+      if (countEl) countEl.textContent = String(n).padStart(2, "0");
+      if (fill) fill.style.transform = "scaleX(" + (prog.v / 100) + ")";
+      const m = Math.floor(n / 10);
+      if (m > mile) { mile = m; audio.tick(250 + n * 4, 0.03); }
+    };
+
+    // Page fully loaded → light up the "Begin Journey" console.
+    const completeBar = () => {
+      if (countEl) countEl.textContent = "100";
+      if (fill) fill.style.transform = "scaleX(1)";
+      if (box) box.classList.add("is-complete");
+      audio.chime();
+      gsap.fromTo([enterBtn, calib].filter(Boolean),
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.55, ease: "power2.out", stagger: 0.14 });
+      autoT = window.setTimeout(enter, 4500); // fallback so nobody is stranded
+    };
+
+    // Snap from the hold to 100 — guarded so the cap and ready can't double-fire.
+    let finishing = false;
+    const finishBar = () => {
+      if (finishing) return;
+      finishing = true;
+      gsap.to(prog, { v: 100, duration: 0.5, ease: "power2.out", onUpdate: paint, onComplete: completeBar });
+    };
+
     gsap.timeline()
       .to(rise, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.07 })
       .to(prog, {
-        v: 100, duration: 3.6, ease: "power1.inOut",
-        onUpdate() {
-          const n = Math.round(prog.v);
-          if (countEl) countEl.textContent = String(n).padStart(2, "0");
-          if (fill) fill.style.transform = "scaleX(" + (prog.v / 100) + ")";
-          const m = Math.floor(n / 10);
-          if (m > mile) { mile = m; audio.tick(250 + n * 4, 0.03); }
-        },
+        v: 90, duration: 2.6, ease: "power1.out", onUpdate: paint,
         onComplete() {
-          if (countEl) countEl.textContent = "100";
-          if (box) box.classList.add("is-complete");
-          audio.chime();
-          gsap.fromTo([enterBtn, calib].filter(Boolean),
-            { opacity: 0, y: 8 },
-            { opacity: 1, y: 0, duration: 0.55, ease: "power2.out", stagger: 0.14 });
-          autoT = window.setTimeout(enter, 4500); // fallback so nobody is stranded
+          // 90% shown — if the page is already loaded, finish at once; otherwise
+          // creep slowly toward 99 so the bar never looks frozen, and snap to 100
+          // the instant the whole page is ready (hard cap at 9s as a safety net).
+          const creep = gsap.to(prog, { v: 99, duration: 7, ease: "power1.out", onUpdate: paint });
+          const cap = window.setTimeout(() => { creep.kill(); finishBar(); }, 9000);
+          whenReady(() => { clearTimeout(cap); creep.kill(); finishBar(); });
         },
       }, "-=0.2");
 
@@ -800,7 +882,7 @@ export default function initSiteEffects() {
   function heroIntro(gsap) {
     const serif = $(".hero__line--serif");
     const sans = $(".hero__line--sans");
-    const delay = REDUCE ? 0 : 1.7; // begins as the preloader lifts
+    const delay = (REDUCE || seenSession) ? 0 : 1.7; // begins as the preloader lifts (instant when the preloader was skipped)
 
     if (serif) {
       const chars = splitChars(serif);

@@ -1,17 +1,10 @@
 import { asset } from "@/lib/asset";
-import { GLSLHills } from "@/components/ui/glsl-hills";
 
 export default function Footer() {
   return (
     <footer className="footer" id="footer">
-      {/* Animated GLSL hills — drifting noise ridges as the footer backdrop
-          (z-index 0, behind the content which sits at z-index 1). */}
-      <div className="footer__hills" aria-hidden="true">
-        {/* wine-red ridges (oxblood family). Lightened vs the pure #260a0e
-            token because the ridges are semi-transparent — a near-black colour
-            would vanish against the dark footer. */}
-        <GLSLHills color={[0.62, 0.17, 0.2]} />
-      </div>
+      {/* Solid beige backdrop (set in .footer) — the animated GLSL-hills ridges
+          were removed; the footer text is darkened to read on the light ground. */}
       <div className="footer__inner">
         <div className="footer__marquee" aria-hidden="true">
           <div className="footer__marquee-track">

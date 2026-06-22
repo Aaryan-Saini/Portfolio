@@ -2,3 +2,4 @@
 /Portfolio/
 /Recording*.mp4
 node_modules/
+.vercel

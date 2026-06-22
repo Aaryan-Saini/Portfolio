@@ -7,20 +7,37 @@ export default function Hero() {
           becomes the hero background (covering the section gradient). Sits at
           z-index 0 behind the core (1), aura (0) and content grid (2);
           pointer-events:none keeps the hero clickable. `invert` forces the dark
-          treatment so the light hero copy stays legible. The radial ink scrim
-          lifts text contrast over the busy weave. */}
+          treatment so the light hero copy stays legible. The canvas filter pushes
+          saturation/brightness so the crimson ribbons read as glowing; a
+          screen-blend crimson radial lifts the red into a true glow; and a
+          lighter ink scrim keeps the copy legible without burying the red. */}
       <div
         aria-hidden="true"
         style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}
       >
-        <SilkShader invert />
+        <SilkShader
+          invert
+          style={{ filter: "saturate(1.7) brightness(1.18) contrast(1.1)" }}
+        />
+        {/* crimson glow lift — screen-blends the red ribbons brighter */}
+        <span
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            mixBlendMode: "screen",
+            background:
+              "radial-gradient(70% 58% at 50% 44%, rgba(214,24,42,0.55) 0%, rgba(140,16,28,0.26) 46%, transparent 78%)",
+          }}
+        />
+        {/* lighter ink scrim — preserves text contrast over the busy weave */}
         <span
           style={{
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
             background:
-              "radial-gradient(72% 60% at 50% 46%, rgba(22,16,15,0.55) 0%, rgba(22,16,15,0.14) 50%, transparent 78%)",
+              "radial-gradient(72% 60% at 50% 46%, rgba(22,16,15,0.30) 0%, rgba(22,16,15,0.06) 50%, transparent 78%)",
           }}
         />
       </div>

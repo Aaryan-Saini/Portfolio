@@ -31,7 +31,7 @@ export default function Projects() {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="auto"
                 aria-label="Diabetic Retinopathy AI project demo"
               />
               <span className="panel__media-tint" />
@@ -74,7 +74,7 @@ export default function Projects() {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="auto"
                 aria-label="Brain Tumor Detection QA app demo"
               />
               <span className="panel__media-tint" />
@@ -117,7 +117,7 @@ export default function Projects() {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="auto"
                 aria-label="Saatvik Fincorp website demo"
               />
               <span className="panel__media-tint" />

@@ -58,7 +58,10 @@ const GLSLHills = ({
 
       createMesh() {
         return new THREE.Mesh(
-          new THREE.PlaneGeometry(planeSize, planeSize, planeSize, planeSize),
+          // Keep the world size but slash tessellation: 256² segments is ~132k
+          // triangles re-running 3 Perlin noises/vertex every frame. 96² (~18k
+          // tris) reads identically for soft ridges at a fraction of the cost.
+          new THREE.PlaneGeometry(planeSize, planeSize, 96, 96),
           new THREE.RawShaderMaterial({
             uniforms: this.uniforms,
             vertexShader: `
@@ -192,6 +195,7 @@ const GLSLHills = ({
     }
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 1, 10000);
     const clock = new THREE.Clock();
@@ -216,20 +220,36 @@ const GLSLHills = ({
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frameId = 0;
+    let inView = true;
     const renderLoop = () => {
       plane.render(clock.getDelta());
       renderer.render(scene, camera);
-      frameId = requestAnimationFrame(renderLoop);
+      // The footer sits at the very bottom — offscreen ~99% of the session.
+      // Stop the loop when it isn't visible (or the tab is hidden).
+      frameId = !reduce && inView && !document.hidden ? requestAnimationFrame(renderLoop) : 0;
+    };
+    const ensureRunning = () => {
+      if (reduce) { renderer.render(scene, camera); return; } // single still frame
+      if (!frameId && inView && !document.hidden) {
+        clock.getDelta();                 // discard time accrued while paused (no jump)
+        frameId = requestAnimationFrame(renderLoop);
+      }
     };
 
-    if (reduce) {
-      renderer.render(scene, camera); // a single still frame of ridges
-    } else {
-      renderLoop();
-    }
+    ensureRunning();
+
+    const io =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver((es) => { inView = es[0].isIntersecting; ensureRunning(); }, { rootMargin: "120px" })
+        : null;
+    io?.observe(container);
+    const onVis = () => { if (!document.hidden) ensureRunning(); };
+    document.addEventListener("visibilitychange", onVis);
 
     return () => {
       cancelAnimationFrame(frameId);
+      io?.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
       ro.disconnect();
       plane.mesh.geometry.dispose();
       (plane.mesh.material as THREE.Material).dispose();
