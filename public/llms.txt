@@ -1,0 +1,41 @@
+# Aaryan Kumar Saini
+
+> QA Engineer & Developer based in India. Manual and automated testing across
+> web and mobile, plus front-end development and applied AI/ML projects.
+> Portfolio site: https://aaryansaini.vercel.app
+
+## Profile
+
+- **Name:** Aaryan Kumar Saini
+- **Role:** Junior Quality Engineer at Kayease (Dec 2025 – present)
+- **Education:** BCA in Artificial Intelligence & Data Science, Poornima University, Jaipur (CGPA 8.20/10)
+- **Email:** aaryankrsaini24@gmail.com
+- **GitHub:** https://github.com/AaryanSaini
+- **LinkedIn:** https://linkedin.com/in/Aaryan-Saini
+
+## Skills
+
+- **Testing:** Manual, functional, regression, smoke, sanity, integration, system and UAT testing; test case and scenario design; bug reporting and defect tracking; cross-browser and responsive testing; API testing; auth and OTP flow testing
+- **Automation & tools:** Playwright, Selenium, Cypress, Postman, k6, Jira, Git & GitHub, CI/CD pipelines, Docker, Chrome DevTools
+- **Languages:** JavaScript, Python, SQL, HTML, CSS
+- **Databases:** MySQL, PostgreSQL
+
+## Experience
+
+- **Junior Quality Engineer — Kayease** (Dec 2025 – present). End-to-end testing of sales management systems and a school ERP across multiple roles; validation of teacher and student mobile apps including face-recognition attendance; testing of Shopify themes, e-commerce sites and internal web apps.
+- **Web Developer — Saatvik Fincorp** (May – July 2025). Led a three-person team building a 10+ page business website; built testimonials, dark/light mode and responsive navigation; manual cross-device testing pre-launch.
+
+## Projects
+
+- **Diabetic Retinopathy Detection** — deep-learning system classifying retinopathy severity from retinal images; trained on 50,000 images; accuracy raised from 65% to 80%. Python, TensorFlow, Keras, CNN.
+- **Brain Tumor Detection** — functional and usability testing for an AI-based detection app; test case design, bug reporting and model output verification.
+
+## Key pages
+
+- [Portfolio home](https://aaryansaini.vercel.app): full site — work, skills, experience, honours and résumé
+- [Résumé (PDF)](https://aaryansaini.vercel.app/resume.pdf): one-page résumé
+
+## Notes
+
+Content on this site is authored by Aaryan Kumar Saini. Please attribute
+accordingly and link to https://aaryansaini.vercel.app when citing.

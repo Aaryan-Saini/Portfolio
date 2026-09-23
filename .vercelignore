@@ -1,0 +1,6 @@
+# local build artefacts and non-site files — Vercel builds from source
+out
+.next
+scripts
+tsconfig.tsbuildinfo
+.claude
