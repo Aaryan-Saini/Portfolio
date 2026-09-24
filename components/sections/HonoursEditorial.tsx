@@ -2,12 +2,14 @@
 
 /* ============================================================================
    HonoursEditorial — "Marks of Recognition & honours".
-   A prize register cut straight into the mountains: a sunrise over layered
-   plum ridgelines in the site's dusk palette (honours-dusk.webp — a pale
-   rose sun, the dawn-rose band, plum night above) is the ground here, FIXED
-   to the viewport so the page scrolls over stationary peaks. That makes
-   this an .edt-dark spread — paper-coloured type on the range — carrying the
-   dark Experience block above it down into the tinted Resume paper below.
+   A prize register printed on the night sky: a star field over a bank of
+   rose clouds in the site's dusk palette (honours-clouds-dusk.webp — the
+   untouched honours-clouds.webp graded plum-black → berry → pale rose, stars
+   kept white), FIXED to the viewport so the page scrolls over a stationary
+   sky. The top edge mirrors the rose glow at the foot of the Experience
+   stage above, so the two meet without a seam, and the foot fades into the
+   tinted Resume paper below. That makes this an .edt-dark spread —
+   paper-coloured type on the night.
    A laurel crest announces the section, then the four honours run as a React
    Bits <FlowingMenu/> — serif title rows whose hover reveals a flowing amber
    band alternating a terse mono tag with the honour's photographic pill.
@@ -154,9 +156,9 @@ export default function HonoursEditorial() {
   /* crest display title — shared per-character blur reveal */
   useCharReveal(rootRef, ".hnx-crest .crest__title");
 
-  /* the range photograph (47 KB) is attached only once the section is within
+  /* the sky photograph (115 KB) is attached only once the section is within
      two viewports — about what a fast Lenis flick covers — via the .hnx-near
-     class (see css); until then the .edt-dark ground shows, unchanged */
+     class (see css); until then the edge blends sit on the .edt-dark ground */
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
@@ -250,23 +252,30 @@ export default function HonoursEditorial() {
 const css = /* css */ `
 .hnx-root {
   /* no overflow hidden — the torn edge must poke above the section */
-  /* The white veil is gone, so the range now carries the section unfiltered.
-     That flips the spread from paper to .edt-dark — which supplies the ink
-     ground, paper-coloured type and crumple grain that the photograph needs. */
-  /* single layer now — image composed inline so asset() gets the basePath */
-  background-size: cover;
-  background-position: center 38%;
+  /* edge blends, scrolling with the section, top to bottom:
+     · the Experience stage's foot, mirrored — its rose-magenta glow (same
+       stops, same 130% × 70vh ellipse, centre 10vh past the edge) over its
+       #4a1839 plum, so both sides of the seam are the same colour, fading
+       into the sky by ~60vh
+     · a short fade into the Resume paper's --night at the foot */
+  --hnx-edges:
+    radial-gradient(130% 70vh at 50% -10vh, rgba(232, 70, 150, 0.62) 0%, rgba(239, 130, 170, 0.3) 32%, rgba(154, 117, 173, 0.12) 54%, transparent 74%),
+    linear-gradient(180deg, #4a1839 0, rgba(61, 22, 54, 0.9) 14vh, rgba(41, 20, 47, 0.5) 34vh, rgba(29, 17, 36, 0) 60vh),
+    linear-gradient(0deg, var(--night) 0, rgba(26, 16, 32, 0) 16vh);
+  background-image: var(--hnx-edges);
+  background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+  background-position: 0 0, 0 0, 0 0, center 62%;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-attachment: scroll, scroll, scroll, fixed;
 }
-/* the range image is attached only once the section is within two viewports
-   (IntersectionObserver in the component); composed here so asset() gets the
-   basePath — no veil, the range reads at full strength */
+/* the sky photograph is attached only once the section is within two
+   viewports (IntersectionObserver in the component); composed here so
+   asset() gets the basePath. Fixed, so the page scrolls over a still sky. */
 .hnx-root.hnx-near {
-  background-image: url("${asset("/honours-dusk.webp")}");
+  background-image: var(--hnx-edges), url("${asset("/honours-clouds-dusk.webp")}");
 }
 /* touch / narrow viewports: iOS ignores fixed attachment and repaints cost —
-   let the range scroll with the section instead */
+   let the sky scroll with the section instead */
 @media (max-width: 1023.5px), (hover: none) {
   .hnx-root {
     background-attachment: scroll;
@@ -277,7 +286,7 @@ const css = /* css */ `
 }
 
 /* ---------------------------------------------------------------- crest */
-/* laurels lifted to the brighter cyan so they hold against the range */
+/* laurels lifted to the brighter cyan so they hold against the sky */
 .hnx-crest .crest__laurel {
   color: var(--gold);
   opacity: 1;
@@ -352,11 +361,8 @@ const css = /* css */ `
 /* ----------------------------------------------------------------- MOBILE
    The flowing menu is hover-only, so phones get the plain register instead:
    photo pill, year, title and the full citation, on a frosted ink panel so
-   the type holds against the mountain plate. */
+   the type holds against the clouds. */
 @media (max-width: 767.98px) {
-  .hnx-root {
-    background-position: center 30%;
-  }
   .hnx-flow,
   .hnx-srlist {
     display: none;

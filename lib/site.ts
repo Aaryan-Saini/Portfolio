@@ -22,19 +22,32 @@ export const SITE_DESCRIPTION =
    entity rather than treating it as an anonymous page. Every field below is
    already published on the page itself (footer, overlay nav, résumé). */
 export const personSchema = {
-  "@context": "https://schema.org",
   "@type": "Person",
+  "@id": `${SITE_URL}/#person`,
   name: SITE_NAME,
   alternateName: "Aaryan Saini",
+  givenName: "Aaryan",
+  additionalName: "Kumar",
+  familyName: "Saini",
   jobTitle: "QA Engineer & Developer",
   description: SITE_DESCRIPTION,
   url: SITE_URL,
-  image: `${SITE_URL}/og.jpg`,
+  /* a real photograph (the stamp portrait on the page), not the social card —
+     it is what a knowledge panel or profile result would show */
+  image: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/stamp-portrait.webp`,
+    width: 600,
+    height: 720,
+  },
   email: "mailto:aaryankrsaini24@gmail.com",
   telephone: "+91-96255-11881",
+  /* every profile that is Aaryan's: the site links github.com/AaryanSaini;
+     github.com/Aaryan-Saini hosts this portfolio's own repository */
   sameAs: [
     "https://github.com/AaryanSaini",
-    "https://linkedin.com/in/Aaryan-Saini",
+    "https://github.com/Aaryan-Saini",
+    "https://www.linkedin.com/in/Aaryan-Saini",
   ],
   worksFor: { "@type": "Organization", name: "Kayease" },
   alumniOf: {
@@ -57,10 +70,16 @@ export const personSchema = {
     "Postman",
     "Performance Testing",
     "k6",
+    "Regression Testing",
+    "Cross-browser Testing",
+    "Mobile App Testing",
+    "Jira",
     "CI/CD",
+    "Chrome Extensions",
     "JavaScript",
     "Python",
     "SQL",
+    "Data Analysis",
   ],
   hasOccupation: {
     "@type": "Occupation",
@@ -71,18 +90,37 @@ export const personSchema = {
   },
 } as const;
 
+/* WebSite — the node Google reads for the site name shown above a result
+   ("Aaryan Kumar Saini" rather than "aaryansaini.vercel.app"). */
+export const websiteSchema = {
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: SITE_URL,
+  name: SITE_NAME,
+  alternateName: ["Aaryan Saini", "Aaryan Saini Portfolio"],
+  description: SITE_DESCRIPTION,
+  inLanguage: "en",
+  publisher: { "@id": personSchema["@id"] },
+} as const;
+
 /* ProfilePage wraps the Person above. Google treats a ProfilePage as "this
    page IS the profile of that entity" rather than "this page mentions them",
-   which is exactly what a one-page portfolio is. mainEntity points at the
-   Person so the two are linked rather than duplicated. */
+   which is exactly what a one-page portfolio is. mainEntity carries the
+   Person inline (Google's ProfilePage docs expect it there). */
 export const profilePageSchema = {
-  "@context": "https://schema.org",
   "@type": "ProfilePage",
   "@id": `${SITE_URL}/#profilepage`,
   url: SITE_URL,
   name: SITE_TITLE,
   description: SITE_DESCRIPTION,
   inLanguage: "en",
+  isPartOf: { "@id": websiteSchema["@id"] },
   primaryImageOfPage: `${SITE_URL}/og.jpg`,
   mainEntity: personSchema,
+} as const;
+
+/* the single JSON-LD block rendered in app/layout.tsx */
+export const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [websiteSchema, profilePageSchema],
 } as const;

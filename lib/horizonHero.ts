@@ -8,13 +8,13 @@
      orbit, film grain, atmosphere streaks) flanked by two torn-paper photo
      "prints". Every print is bent so its rows follow the same curved horizon.
      As the visitor scrolls the prints retract to thin torn strips.
-   · SVG overlay — "Introducing" rises from behind the limb on load, then the
+   · SVG overlay — "Hello, I'm" rises from behind the limb on load, then the
      name rises along the horizon arc with an ink-press texture and a
      left→right sweep, clipped to the middle print.
    · HTML landing — role eyebrow + numbered contents list, placed from the
      same arc geometry.
    · Introduction (formerly the About section) — the name and contents fade
-     and a short "How I earn trust." block fades in where they stood.
+     and a short "Nice to meet you." block fades in where they stood.
    · Paper — white paper under a torn edge (components/ui/TornPaperEdge),
      with the hero showing straight through above the edge, waits just below
      the stage, so at rest the hero fills the whole screen.
@@ -99,7 +99,7 @@ const INTRO_OUT: [number, number] = [0.92, 1.08];
 const INTRO_IN: [number, number] = [1.02, 1.2];
 /* the about line fills word by word over this stretch (starting once the
    introduction has fully faded in), then holds to be read */
-const ABOUT_FILL: [number, number] = [1.2, 1.66];
+const ABOUT_FILL: [number, number] = [1.2, 1.6];
 /* the introduction holds on its own for a while after the fill (reading time) */
 const PAPER: [number, number] = [1.8, 2.85];
 /* where the tear line sits (fraction of the stage height) as the pin lets go */
@@ -431,7 +431,7 @@ export function mountHorizonHero(root: HTMLElement, cfg: HorizonConfig): () => v
 
   /** The curved horizon: a huge circle. Its apex is placed so the text set
       on it sits in the vertical middle of the stage on every screen: halfway
-      between the visual centres of "Introducing" (on load) and the landed
+      between the visual centres of "Hello, I'm" (on load) and the landed
       name, so each lands within a few percent of the true middle. */
   function horizon(): Circle {
     const u = nameSize();
@@ -439,7 +439,7 @@ export function mountHorizonHero(root: HTMLElement, cfg: HorizonConfig): () => v
     // visual centres above the apex (Cormorant: caps/ascenders ≈ .68em above
     // the baseline, descenders ≈ .2em below): the name's baseline sits
     // .24u + gap above the apex (two lines: the upper one 1.05u higher),
-    // "Introducing"'s .42J above it
+    // "Hello, I'm"'s .42J above it
     const nameUp = gap + (twoLine ? 1.005 * u : 0.48 * u);
     const introUp = 0.66 * introSize();
     const apexY = clamp(H / 2 + (nameUp + introUp) / 2, 0.45 * H, 0.66 * H);
@@ -658,7 +658,7 @@ export function mountHorizonHero(root: HTMLElement, cfg: HorizonConfig): () => v
     return Math.min(u, (0.84 * W) / widest);
   }
 
-  /** "Introducing"'s font size for this stage width (px) */
+  /** "Hello, I'm"'s font size for this stage width (px) */
   function introSize(): number {
     const small = clamp((1000 - W) / 600, 0, 1);
     return clamp(W * (0.03 + 0.05 * small), 22, 58);
@@ -774,6 +774,9 @@ export function mountHorizonHero(root: HTMLElement, cfg: HorizonConfig): () => v
       const hl = REDUCED ? 0 : Math.sin(Math.PI * t);
       setP(w, "opacity", (0.3 + 0.7 * t).toFixed(3));
       setP(w, "--hl", hl.toFixed(3));
+      // fill progress: the rose words ghost in cream like the rest and only
+      // take their rose as they fill (rose at 30% reads as muddy purple)
+      setP(w, "--f", t.toFixed(3));
       setP(w, "transform", `translateY(${((1 - t) * 0.18).toFixed(3)}em)`);
     });
   }
@@ -847,7 +850,7 @@ export function mountHorizonHero(root: HTMLElement, cfg: HorizonConfig): () => v
     if (gl) drawGL(G, alpha, xL, xR, Lw, Rw);
     else drawFallback(G, alpha, xL, xR, Lw, Rw);
 
-    // "Introducing" — rises from behind the limb on load, lifts away on scroll
+    // "Hello, I'm" — rises from behind the limb on load, lifts away on scroll
     const J = introSize();
     setA(introText, "font-size", J.toFixed(1));
     const sr = 0.28 * J;

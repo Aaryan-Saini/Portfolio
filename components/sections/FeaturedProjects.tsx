@@ -7,8 +7,9 @@
    in the order it was built, labelled with its stage and year. The road's
    centre line lights up as you scroll (a glowing marker rides its head), and
    each stop's card comes up to full strength the moment the light reaches
-   its milestone — scrolling back up dims them again. The footage of the stop
-   the light last reached is the one that plays.
+   its milestone — scrolling back up dims them again. Each card leads with a
+   still cover (public/projects/*.webp): the real site or extension UI in the
+   site's plum-and-rose frame.
 
    The road is one SVG path drawn through the milestone nodes themselves (it
    is laid out from their real positions, so it always passes through them
@@ -17,7 +18,7 @@
 
    Desktop: cards alternate left and right of the road, which weaves toward
    each card. Phones: the road runs down the left edge, cards to its right.
-   Reduced motion: the road is fully lit and every card is shown; no autoplay.
+   Reduced motion: the road is fully lit and every card is shown.
 
    The torn-paper boundary in from the hero lives in the hero itself
    (components/sections/Hero.tsx); the one out, into Sneak Peek, is Sneak
@@ -25,68 +26,55 @@
    (components/sections/WorksMarquee.tsx) — hence the tall bottom padding.
    ========================================================================== */
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { Crest, useCharReveal } from "@/components/ui/editorial";
 import { asset } from "@/lib/asset";
-import { whenUnlocked } from "@/lib/gl";
 import { subscribeScroll } from "@/lib/lenis";
-
-type Result = { value: string; label: string };
 
 type Project = {
   year: string;
-  category: string;
+  /** what it is, in a few plain words */
+  kind: string;
   title: string;
-  role: string;
+  /** one or two plain-language sentences — what it does, for anyone */
   body: string;
-  results: [Result, Result, Result];
-  tools: string[];
-  video: string;
+  /** 1600×1000 cover (16:10, the card's media box) */
+  image: string;
+  alt: string;
+  /** where the reader can see it; the card shows no button without one */
+  link?: { href: string; label: string };
 };
 
 /* in the order they were built — the road runs through them top to bottom */
 const PROJECTS: Project[] = [
   {
     year: "2025",
-    category: "Full-stack · Client delivery",
+    kind: "Company website · Internship",
     title: "Saatvik Fincorp — Company Website",
-    role: "Web Developer Intern · Saatvik Fincorp · May – Jul 2025",
-    body: "Led a three-person team to design and ship a financial-services site from an empty repo — dark/light theming, testimonials, responsive navigation. It pulled a thousand users inside the first month.",
-    results: [
-      { value: "1000+", label: "Users, month one" },
-      { value: "10+", label: "Pages shipped" },
-      { value: "3", label: "Team led" },
-    ],
-    tools: ["HTML / CSS / JS", "End-to-end QA", "Cross-browser", "Responsive"],
-    video: asset("/videos/fincorp.mp4"),
+    body: "A 10+ page website for a finance company, built by a team of three that I led. It went live and reached over 1,000 visitors in its first month.",
+    image: asset("/projects/fincorp.webp"),
+    alt: "The Saatvik Fincorp website home page in a browser window",
+    link: { href: "https://saatvikfincorp.com", label: "Visit website" },
   },
   {
     year: "2026",
-    category: "Chrome extension · Playwright tooling",
+    kind: "Chrome extension · Testing tool",
     title: "Locator Picker",
-    role: "Independent project · Chrome extension, Manifest V3 · 2026",
-    body: "Right-click any element on a page and get the strongest Playwright locator that resolves to exactly one node — walked down Playwright's own hierarchy from getByRole to a CSS path, and verified against the live DOM before it is copied. Record a whole flow and export it as locators, test steps or a runnable spec.",
-    results: [
-      { value: "58", label: "Unit tests passing" },
-      { value: "7", label: "Locator tiers, ranked" },
-      { value: "0", label: "Network requests" },
-    ],
-    tools: ["JavaScript", "Manifest V3", "Playwright", "jsdom"],
-    video: asset("/videos/locator_picker.mp4"),
+    body: "Right-click anything on a web page to get a reliable Playwright locator for it, ready to paste into a test. It can also record a whole flow and turn it into a test script.",
+    image: asset("/projects/locator-picker.webp"),
+    alt: "The Locator Picker extension open over a web page, listing captured Playwright locators",
+    /* the profile until the extension has its own public page */
+    link: { href: "https://github.com/AaryanSaini", label: "View on GitHub" },
   },
   {
     year: "2026",
-    category: "Chrome extension · Browser internals",
+    kind: "Chrome extension",
     title: "Compartment — Container Tabs",
-    role: "Independent project · Chrome extension, Manifest V3 · 2026",
-    body: "Container tabs for Chrome, which has no container API. Every container is its own cookie jar and web storage, so one window can be signed in to the same site as several people at once. Cookies are routed per tab with declarativeNetRequest session rules, read back off responses, and namespaced by a main-world storage shim.",
-    results: [
-      { value: "40+", label: "Adversarial QA scenarios" },
-      { value: "4", label: "Tab markers, each switchable" },
-      { value: "116+", label: "Chrome, no build step" },
-    ],
-    tools: ["JavaScript", "Manifest V3", "declarativeNetRequest", "webRequest"],
-    video: asset("/videos/compartment.mp4"),
+    body: "Sign in to the same website with different accounts in one Chrome window. Each container tab keeps its own logins and site data, so the accounts never mix.",
+    image: asset("/projects/compartment.webp"),
+    alt: "The Compartment extension's container switcher, listing Personal, Work, Banking and other containers",
+    /* the profile until the extension has its own public page */
+    link: { href: "https://github.com/AaryanSaini", label: "View on GitHub" },
   },
 ];
 
@@ -100,11 +88,6 @@ const READ_AT = 0.62;
 export default function FeaturedProjects() {
   const rootRef = useRef<HTMLElement | null>(null);
   const routeRef = useRef<HTMLDivElement | null>(null);
-  /* the stop the light last reached (-1: none yet) — its footage plays */
-  const [current, setCurrent] = useState(-1);
-  /* the section is within one viewport of the screen — only then do the
-     videos get their sources */
-  const [near, setNear] = useState(false);
 
   useCharReveal(rootRef, ".fpx-crest .crest__title");
 
@@ -167,7 +150,6 @@ export default function FeaturedProjects() {
       if (cur !== lastCur) {
         lastCur = cur;
         stops.forEach((s, i) => s.classList.toggle("is-current", i === cur));
-        setCurrent(cur);
       }
     };
     const tick = () => {
@@ -228,58 +210,6 @@ export default function FeaturedProjects() {
     };
   }, []);
 
-  /* ---- footage sources are attached only once the section is within one
-     viewport, and never during the boot — nothing can approach the viewport
-     while scroll is locked behind the loader */
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    let io: IntersectionObserver | null = null;
-    const arm = () => {
-      if (!("IntersectionObserver" in window)) {
-        setNear(true);
-        return;
-      }
-      io = new IntersectionObserver(
-        ([e]) => {
-          if (!e.isIntersecting) return;
-          io?.disconnect();
-          io = null;
-          setNear(true);
-        },
-        { rootMargin: "100% 0px" }
-      );
-      io.observe(root);
-    };
-    const cancel = whenUnlocked(arm);
-    return () => {
-      cancel();
-      io?.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || !near) return;
-    root.querySelectorAll<HTMLVideoElement>(".fpx-video").forEach((v) => {
-      if (v.src || !v.dataset.src) return;
-      v.preload = "metadata";
-      if (v.dataset.poster) v.poster = v.dataset.poster;
-      v.src = v.dataset.src; // assigning src runs the load algorithm
-    });
-  }, [near]);
-
-  /* ---- only the footage of the stop the light last reached plays */
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || !near) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    root.querySelectorAll<HTMLVideoElement>(".fpx-video").forEach((v, i) => {
-      if (!reduce && i === current) v.play().catch(() => {});
-      else v.pause();
-    });
-  }, [near, current]);
-
   return (
     <section id="work" ref={rootRef} className="fpx edt-paper">
       {/* the dusk glow, held behind the whole road (same as the dossier) */}
@@ -326,7 +256,7 @@ export default function FeaturedProjects() {
           <ol className="fpx-stops">
             {PROJECTS.map((p, i) => (
               <li
-                key={p.video}
+                key={p.title}
                 className={`fpx-stop ${i % 2 === 0 ? "fpx-stop--l" : "fpx-stop--r"}`}
                 style={{ "--i": i } as CSSProperties}
               >
@@ -336,16 +266,14 @@ export default function FeaturedProjects() {
 
                 <article className="fpx-card" aria-label={`Stage ${i + 1}, ${p.year}: ${p.title}`}>
                   <div className="fpx-media">
-                    <video
-                      className="fpx-video"
-                      data-src={p.video}
-                      data-poster={p.video.replace(/\.mp4$/, "-poster.webp")}
-                      muted
-                      loop
-                      playsInline
-                      preload="none"
-                      aria-hidden="true"
-                      tabIndex={-1}
+                    <img
+                      className="fpx-shot"
+                      src={p.image}
+                      alt={p.alt}
+                      width={1600}
+                      height={1000}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="fpx-cardbody">
@@ -353,23 +281,24 @@ export default function FeaturedProjects() {
                       <span className="fpx-stage__dot" aria-hidden="true" />
                       Stage {pad(i + 1)} · {p.year}
                     </p>
-                    <p className="fpx-cat">{p.category}</p>
                     <h3 className="fpx-title">{p.title}</h3>
-                    <p className="fpx-role">{p.role}</p>
+                    <p className="fpx-kind">{p.kind}</p>
                     <p className="fpx-body">{p.body}</p>
-                    <dl className="fpx-results">
-                      {p.results.map((r) => (
-                        <div key={r.label}>
-                          <dd>{r.value}</dd>
-                          <dt>{r.label}</dt>
-                        </div>
-                      ))}
-                    </dl>
-                    <ul className="fpx-tools" aria-label="Built with">
-                      {p.tools.map((t) => (
-                        <li key={t}>{t}</li>
-                      ))}
-                    </ul>
+                    {p.link ? (
+                      <a
+                        className="fpx-link"
+                        href={p.link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-cursor="link"
+                      >
+                        {p.link.label}
+                        <span className="fpx-link__arrow" aria-hidden="true">
+                          ↗
+                        </span>
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    ) : null}
                   </div>
                 </article>
               </li>
@@ -632,7 +561,7 @@ const css = /* css */ `
   overflow: hidden;
   background: #120b16;
 }
-.fpx-video {
+.fpx-shot {
   display: block;
   width: 100%;
   height: 100%;
@@ -640,7 +569,7 @@ const css = /* css */ `
   filter: saturate(0.5) brightness(0.72);
   transition: filter 0.7s var(--ease);
 }
-.fpx-stop.is-reached .fpx-video {
+.fpx-stop.is-reached .fpx-shot {
   filter: none;
 }
 
@@ -668,73 +597,49 @@ const css = /* css */ `
   background: var(--gold);
   box-shadow: 0 0 8px var(--gold);
 }
-.fpx-cat {
-  margin: 0.9rem 0 0;
-  font: 400 0.62rem / 1.5 var(--mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 .fpx-title {
-  margin: 0.35rem 0 0;
+  margin: 0.9rem 0 0;
   font: 600 clamp(1.35rem, 1rem + 1vw, 1.8rem) / 1.15 var(--sans);
   letter-spacing: -0.02em;
   color: var(--fg);
   text-wrap: balance;
 }
-.fpx-role {
-  margin: 0.45rem 0 0;
-  font: 400 0.8rem / 1.5 var(--body);
+.fpx-kind {
+  margin: 0.4rem 0 0;
+  font: 400 0.85rem / 1.5 var(--body);
   color: var(--muted);
 }
 .fpx-body {
-  margin: 0.9rem 0 0;
-  font: 300 clamp(0.9rem, 0.86rem + 0.15vw, 0.98rem) / 1.62 var(--body);
-  color: color-mix(in srgb, var(--fg) 80%, transparent);
+  margin: 0.85rem 0 0;
+  font: 300 clamp(0.98rem, 0.94rem + 0.2vw, 1.06rem) / 1.6 var(--body);
+  color: color-mix(in srgb, var(--fg) 88%, transparent);
   text-wrap: pretty;
 }
-.fpx-results {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+/* the way out to the project itself */
+.fpx-link {
+  display: inline-flex;
+  align-items: center;
   gap: 0.5rem;
-  margin: 1.1rem 0 0;
-}
-.fpx-results > div {
-  padding: 0.7rem 0.75rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-.fpx-results dd {
-  margin: 0;
-  font: 600 clamp(1.15rem, 0.95rem + 0.6vw, 1.45rem) / 1 var(--sans);
-  letter-spacing: -0.02em;
-  color: var(--gold);
-}
-.fpx-results dt {
-  margin-top: 0.4rem;
-  font: 400 0.56rem / 1.35 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.fpx-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-.fpx-tools li {
-  padding: 0.38rem 0.7rem;
+  margin-top: 1.15rem;
+  padding: 0.65rem 1.05rem;
   border-radius: 999px;
-  background: rgba(239, 162, 182, 0.07);
-  border: 1px solid rgba(239, 162, 182, 0.2);
-  font: 400 0.6rem / 1 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--fg) 82%, transparent);
+  background: rgba(239, 162, 182, 0.1);
+  border: 1px solid rgba(239, 162, 182, 0.38);
+  font: 500 0.88rem / 1 var(--sans);
+  color: var(--gold);
+  transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.fpx-link:hover,
+.fpx-link:focus-visible {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #2a1020;
+}
+.fpx-link__arrow {
+  transition: transform 0.3s var(--ease);
+}
+.fpx-link:hover .fpx-link__arrow {
+  transform: translate(2px, -2px);
 }
 
 /* ------------------------------------------------------------- phones */
@@ -786,7 +691,7 @@ const css = /* css */ `
 @media (prefers-reduced-motion: reduce) {
   .fpx-card,
   .fpx-node,
-  .fpx-video {
+  .fpx-shot {
     transition: none;
   }
   .fpx-stop.is-current .fpx-node {
@@ -797,7 +702,7 @@ html.no-js .fpx-card {
   opacity: 1;
   transform: none;
 }
-html.no-js .fpx-video {
+html.no-js .fpx-shot {
   filter: none;
 }
 `;

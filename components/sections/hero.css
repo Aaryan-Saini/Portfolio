@@ -198,9 +198,11 @@
   text-shadow: 0 0 calc(var(--hl) * 22px) rgba(239, 162, 182, calc(var(--hl) * 0.75));
   will-change: opacity, transform;
 }
+/* rose words: cream while still a ghost, rose as the fill (--f, set by the
+   engine; 1 without it) or the flare reaches them */
 .hz-w--a {
   font-style: italic;
-  color: var(--gold, #efa2b6);
+  color: color-mix(in srgb, var(--gold, #efa2b6) calc(max(var(--f, 1), var(--hl)) * 100%), var(--hz-light));
 }
 @media (max-width: 760px) {
   .hz-credo-top {

@@ -1,34 +1,49 @@
 # Aaryan Kumar Saini
 
 > QA Engineer & Developer based in India. Manual and automated testing across
-> web and mobile, plus front-end development and applied AI/ML projects.
+> web and mobile (Playwright, Selenium, Cypress, Postman, k6), plus front-end
+> development, Chrome extensions and applied AI/ML projects.
 > Portfolio site: https://aaryansaini.vercel.app
 
 ## Profile
 
-- **Name:** Aaryan Kumar Saini
+- **Name:** Aaryan Kumar Saini (also Aaryan Saini)
 - **Role:** Junior Quality Engineer at Kayease (Dec 2025 – present)
 - **Education:** BCA in Artificial Intelligence & Data Science, Poornima University, Jaipur (CGPA 8.20/10)
 - **Email:** aaryankrsaini24@gmail.com
-- **GitHub:** https://github.com/AaryanSaini
-- **LinkedIn:** https://linkedin.com/in/Aaryan-Saini
+- **GitHub:** https://github.com/AaryanSaini · https://github.com/Aaryan-Saini
+- **LinkedIn:** https://www.linkedin.com/in/Aaryan-Saini
 
 ## Skills
 
-- **Testing:** Manual, functional, regression, smoke, sanity, integration, system and UAT testing; test case and scenario design; bug reporting and defect tracking; cross-browser and responsive testing; API testing; auth and OTP flow testing
+- **Testing:** Manual, functional, regression, smoke, sanity, UI, integration, system and UAT testing; test case and scenario design; role-based permission and workflow validation; bug reporting and defect tracking; cross-browser, responsive and Android testing; API testing; auth and OTP flow testing
 - **Automation & tools:** Playwright, Selenium, Cypress, Postman, k6, Jira, Git & GitHub, CI/CD pipelines, Docker, Chrome DevTools
 - **Languages:** JavaScript, Python, SQL, HTML, CSS
-- **Databases:** MySQL, PostgreSQL
+- **Data:** MySQL, PostgreSQL, Excel dashboards and reporting
 
 ## Experience
 
-- **Junior Quality Engineer — Kayease** (Dec 2025 – present). End-to-end testing of sales management systems and a school ERP across multiple roles; validation of teacher and student mobile apps including face-recognition attendance; testing of Shopify themes, e-commerce sites and internal web apps.
-- **Web Developer — Saatvik Fincorp** (May – July 2025). Led a three-person team building a 10+ page business website; built testimonials, dark/light mode and responsive navigation; manual cross-device testing pre-launch.
+- **Junior Quality Engineer — Kayease** (on-site, full-time, Dec 2025 – present). QA across three flagship products: a Sales Management ERP (inventory, salesman tracking, distributor workflows, accounts), a School Management System (Student, Teacher, Staff, Admin and Super Admin roles) and a Financial CRM for NBFCs and private lenders. Manual, functional, regression, smoke, UI, cross-browser and mobile testing on web and Android; 500+ test cases and scenarios; Shopify theme and e-commerce testing; Playwright automation for regression suites; API testing in Postman; defects tracked in Jira through full SDLC cycles.
+- **Data Analyst Intern — Growly** (remote, May – Jul 2025). Cleaned and analysed 100+ datasets (up to 100 MB) with SQL, MySQL and Excel; built 3 interactive KPI dashboards; SQL optimisation improved pipeline efficiency by 15%. Earned a Letter of Recommendation.
+- **Web Developer Intern — Saatvik Fincorp** (on-site, May – Jul 2025). Led a three-person team to design, build and launch a 10+ page financial-services website (HTML, CSS, JavaScript) with dark/light mode, testimonials and responsive navigation; 1,000+ users in month one; end-to-end manual QA across browsers and devices before each release.
 
-## Projects
+## Featured projects
 
-- **Diabetic Retinopathy Detection** — deep-learning system classifying retinopathy severity from retinal images; trained on 50,000 images; accuracy raised from 65% to 80%. Python, TensorFlow, Keras, CNN.
+- **Locator Picker** (2026) — Chrome extension (Manifest V3). Right-click any element to get the strongest Playwright locator that resolves to exactly one node, verified against the live DOM; record a flow and export it as locators, test steps or a runnable spec. 58 unit tests passing, zero network requests.
+- **Compartment — Container Tabs** (2026) — Chrome extension (Manifest V3) that brings container tabs to Chrome: each container is its own cookie jar and web storage, so one window can be signed in to the same site as several people. Tested against 40+ adversarial QA scenarios.
+- **Saatvik Fincorp — Company Website** (2025) — client delivery; see Experience above.
+
+## AI/ML projects
+
+- **Diabetic Retinopathy Detection** — deep-learning system classifying retinopathy severity from retinal images; trained on 50,000 images; accuracy raised from 65% to 80%. Python, TensorFlow, Keras, CNN. Top 10 at Prayogam.
 - **Brain Tumor Detection** — functional and usability testing for an AI-based detection app; test case design, bug reporting and model output verification.
+
+## Honours
+
+- 50% Merit Scholarship — Poornima University (2024)
+- Top 10 · Prayogam — inter-university AI/ML competition (2024)
+- Top 50 · Hack2Skill — national-level hackathon (2024)
+- Google GDG — Google Solution Challenge participant (2023)
 
 ## Key pages
 

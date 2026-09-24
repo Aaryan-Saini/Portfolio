@@ -5,10 +5,10 @@
 
    A pinned stage over 385lvh of runway: a code-drawn dawn horizon between two
    torn-paper photo prints; at rest it fills the whole screen. On load the
-   prints come up and "Introducing" rises from behind the limb;
+   prints come up and "Hello, I'm" rises from behind the limb;
    scrolling retracts the prints to thin torn strips, lifts the intro away and
    raises the name along the curved horizon (centred on screen), then the role fades
-   in. Next the name gives way to a short introduction ("How I earn trust."),
+   in. Next the name gives way to a short introduction ("Nice to meet you."),
    and then torn plum paper rises in from below the screen, over the hero; as the pin lets go the scroll carries it on up and
    FeaturedProjects' paper follows — the same paper, one surface.
    Every step is scrubbed by scroll, so scrolling back up plays it in reverse.
@@ -42,10 +42,11 @@ const PAPER_RGB: [number, number, number] = [0.102, 0.063, 0.125];
    `a` marks the words set in rose italic. Every fact is already published
    elsewhere on the site (the dossier, the résumé, public/llms.txt). */
 const ABOUT: { w: string; a?: true }[] = [
-  { w: "QA" }, { w: "engineer" }, { w: "at" }, { w: "Kayease", a: true }, { w: "—" },
-  { w: "I" }, { w: "test" }, { w: "ERPs," }, { w: "school" }, { w: "apps" }, { w: "and" },
-  { w: "storefronts" }, { w: "on" }, { w: "web" }, { w: "and" }, { w: "Android," },
-  { w: "then" }, { w: "automate" }, { w: "the" }, { w: "rest" }, { w: "in" }, { w: "Playwright.", a: true },
+  { w: "QA" }, { w: "engineer" }, { w: "at" }, { w: "Kayease,", a: true },
+  { w: "testing" }, { w: "real" }, { w: "products" }, { w: "on" }, { w: "web" }, { w: "and" }, { w: "Android." },
+  { w: "I" }, { w: "also" }, { w: "build" }, { w: "my" }, { w: "own" }, { w: "Chrome" }, { w: "extensions." },
+  /* the way on: the projects are the very next section */
+  { w: "Scroll", a: true }, { w: "on", a: true }, { w: "to", a: true }, { w: "see", a: true }, { w: "them.", a: true },
 ];
 
 export default function Hero() {
@@ -132,7 +133,7 @@ export default function Hero() {
               <feComposite in="ink" in2="holes" operator="in" />
             </filter>
 
-            {/* hides whatever sits below the limb ("Introducing" rising) */}
+            {/* hides whatever sits below the limb ("Hello, I'm" rising) */}
             <radialGradient id="hz-sky-grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1">
               <stop offset="0" stopColor="#fff" stopOpacity="0" />
               <stop offset="0.98" stopColor="#fff" stopOpacity="0" />
@@ -182,7 +183,7 @@ export default function Hero() {
           <g className="hz-words" mask="url(#hz-sky)">
             <text id="hz-intro" textAnchor="middle" fontSize="40" opacity="0">
               <textPath href="#hz-intro-arc" startOffset="50%">
-                Introducing
+                Hello, I&rsquo;m
               </textPath>
             </text>
           </g>
@@ -216,12 +217,12 @@ export default function Hero() {
             <h2 className="hz-credo-head">
               <LaurelBranch />
               <span>
-                How I <em>Earn Trust.</em>
+                Nice to <em>Meet You.</em>
               </span>
               <LaurelBranch flip />
             </h2>
             <p className="hz-quote">
-              I break software before your <em>users do.</em>
+              I catch the bugs your users <em>never see.</em>
             </p>
           </div>
           <div className="hz-credo-body">

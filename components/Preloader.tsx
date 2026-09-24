@@ -8,7 +8,7 @@
    runs to 70% at once and finishes when the fonts and the hero prints are
    ready), a dawn glow blooms at its apex, and then the veil splits open along
    that exact curve — the top half lifts away, the bottom half drops — onto
-   the hero, whose own intro (the prints coming up, "Introducing" rising from
+   the hero, whose own intro (the prints coming up, "Hello, I'm" rising from
    behind the horizon) starts the moment the split does. The curve is the one
    the hero engine publishes on #hero (--hz-apex / --hz-r, lib/horizonHero.ts),
    so the seam lands on the hero's horizon.

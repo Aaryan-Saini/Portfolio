@@ -2,14 +2,14 @@
 
 /* ============================================================================
    ExperienceEditorial — the beloved horizontal-scroll internship section,
-   reframed as pinned "dossier" paper cards sliding across the midnight
-   ledger. Wrapper ~340vh scrolls; the stage stays sticky at 100svh while
+   reframed as pinned "dossier" cards of dark frosted glass (the Featured
+   Projects card) sliding across the dusk stage. Wrapper ~340vh scrolls; the stage stays sticky at 100svh while
    the 300vw track scrubs from 0 to -66.7 xPercent. Behind each card a
    giant ghost serif word drifts on its own parallax. Section id="experience".
    Fallback (<860px / reduced motion): unpinned vertical stack of the cards.
    ========================================================================== */
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Crest, Crosshair, useCharReveal } from "@/components/ui/editorial";
@@ -20,8 +20,6 @@ type Dossier = {
   company: string;
   ghost: string;
   monogram: string;
-  accent: string; // palette token — letter + medallion border colour
-  chips: string[];
   description: string;
 };
 
@@ -31,13 +29,6 @@ const DOSSIERS: Dossier[] = [
     company: "KAYEASE · ON-SITE · FULL-TIME · DEC 2025 — PRESENT",
     ghost: "TESTING",
     monogram: "K",
-    accent: "var(--gold)" /* #efa2b6 */,
-    chips: [
-      "500+ Test Cases",
-      "3 Flagship Products",
-      "Playwright & Postman",
-      "Jira SDLC Defect Tracking",
-    ],
     description:
       "Executed comprehensive QA across three flagship products — a Sales Management ERP (covering inventory, salesman tracking, distributor workflows and accounts), a School Management System (with Student, Teacher, Staff, Admin and Super Admin roles), and a Financial CRM built for NBFCs and private lending firms, where DSA agents and sales reps manage customer pipelines, track loan progress, monitor repayments and handle end-to-end client lifecycle — tested across all role-based flows. Performed manual, functional, regression, smoke, UI, cross-browser and mobile testing on both web and Android applications. Wrote 500+ test cases and test scenarios, validated role-based permissions, business workflows and edge cases. Tested Shopify themes and e-commerce flows. Explored Playwright-based automation scripting for web application regression suites. Conducted API testing via Postman and tracked all defects in Jira through full SDLC cycles.",
   },
@@ -46,13 +37,6 @@ const DOSSIERS: Dossier[] = [
     company: "GROWLY · REMOTE · MAY – JUL 2025",
     ghost: "ANALYTICS",
     monogram: "G",
-    accent: "var(--gold-soft)" /* #f7cfd9 */,
-    chips: [
-      "100+ Datasets (100MB)",
-      "3 Interactive Dashboards",
-      "15% Pipeline Optimization",
-      "Letter of Recommendation",
-    ],
     description:
       "Worked with 100+ datasets (up to 100 MB) using SQL, MySQL and Excel — cleaning, transforming and analysing raw business data into actionable insights. Built 3 interactive dashboards and pivot-based reports to track KPIs across sales and operations. Identified processing bottlenecks through SQL query optimisation, improving pipeline efficiency by 15%. Documented findings and presented to stakeholders. Earned a Letter of Recommendation for quality of analysis and delivery speed.",
   },
@@ -61,32 +45,12 @@ const DOSSIERS: Dossier[] = [
     company: "SAATVIK FINCORP · ON-SITE · MAY – JUL 2025",
     ghost: "DEVELOPMENT",
     monogram: "S",
-    accent: "var(--gold-deep)" /* #a63e5c */,
-    chips: [
-      "Led 3-Person Team",
-      "10+ Page Financial Site",
-      "1,000+ Month-One Users",
-      "End-to-End QA & Launch",
-    ],
     description:
       "Led a 3-person team to design, develop and launch a 10+ page business website for a financial services firm — from wireframe to live deployment. Built with HTML, CSS and JavaScript; implemented dark/light mode, testimonials carousel, responsive navigation and contact forms. Grew organic traffic to 1,000+ users in month one. Conducted full end-to-end manual QA across browsers and devices before each release. Managed client communication and delivered within deadline.",
   },
 ];
 
 const TOTAL = DOSSIERS.length;
-
-/* role title: roman words + final word in italic (mixed-face editorial) */
-function RoleTitle({ role }: { role: string }) {
-  const words = role.split(" ");
-  const last = words[words.length - 1];
-  const head = words.slice(0, -1).join(" ");
-  return (
-    <h3 className="exx-role">
-      {head ? <>{head} </> : null}
-      <em>{last}</em>
-    </h3>
-  );
-}
 
 /* ---------------------------------------------------------------- component */
 export default function ExperienceEditorial() {
@@ -161,11 +125,7 @@ export default function ExperienceEditorial() {
 
           <div className="exx-track" ref={trackRef}>
             {DOSSIERS.map((d, i) => (
-              <article
-                className="exx-slide"
-                key={d.monogram}
-                style={{ "--exx-accent": d.accent } as CSSProperties}
-              >
+              <article className="exx-slide" key={d.monogram}>
                 <div className="exx-ghostbox" aria-hidden="true">
                   <span className="exx-ghost">{d.ghost}</span>
                 </div>
@@ -175,19 +135,12 @@ export default function ExperienceEditorial() {
                     {d.monogram}
                   </span>
                   <div className="exx-cardin">
-                    <p className="pill-badge pill-badge--paper exx-eyebrow">
+                    <p className="pill-badge exx-eyebrow">
                       <span className="pill-badge__dot" aria-hidden="true" />
-                      {`0${i + 1} / 03 — WORK EXPERIENCE`}
+                      {`0${i + 1} / 03 · Work experience`}
                     </p>
-                    <RoleTitle role={d.role} />
+                    <h3 className="exx-role">{d.role}</h3>
                     <p className="exx-meta">{d.company}</p>
-                    <ul className="exx-chips">
-                      {d.chips.map((c) => (
-                        <li className="chip-mono" key={c}>
-                          {c}
-                        </li>
-                      ))}
-                    </ul>
                     <div className="exx-div" aria-hidden="true">
                       <span>✦</span>
                     </div>
@@ -252,108 +205,89 @@ const css = /* css */ `
 }
 
 /* ------------------------------------------------------- the dossier card */
+/* dark frosted glass — the same card as Featured Projects: a faint light
+   sheen over the stage, a rose rim and a rose glow beneath, with the ghost
+   word behind blurred through it */
 .exx-card {
   position: relative;
   width: min(700px, 100%);
-  background: var(--parch);
-  color: var(--ink);
-  border: 1px solid var(--ink-line);
-  padding: clamp(1.7rem, 1rem + 2.2vw, 2.6rem) clamp(1.4rem, 0.9rem + 2.4vw, 2.8rem);
+  color: var(--fg);
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025) 60%);
+  border: 1px solid rgba(239, 162, 182, 0.34);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  backdrop-filter: blur(14px) saturate(1.15);
+  padding: clamp(1.6rem, 1rem + 2vw, 2.4rem) clamp(1.4rem, 0.9rem + 2.2vw, 2.6rem);
   box-shadow:
-    0 34px 80px rgba(12, 8, 12, 0.55),
-    0 8px 22px rgba(12, 8, 12, 0.35);
-  rotate: 1deg;
-}
-.exx-slide:nth-child(odd) .exx-card {
-  rotate: -1deg;
-}
-/* paper grain */
-.exx-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: var(--paper-noise);
-  opacity: 0.06;
-}
-/* inner hairline frame — printed dossier register */
-.exx-card::after {
-  content: "";
-  position: absolute;
-  inset: 9px;
-  pointer-events: none;
-  border: 1px solid var(--ink-line-soft);
+    0 30px 60px -24px rgba(0, 0, 0, 0.65),
+    0 20px 70px -30px rgba(222, 60, 140, 0.45);
 }
 .exx-cardin {
   position: relative;
   z-index: 1;
 }
 
-/* circular monogram medallion, top-right */
+/* monogram, top-right — lit like a reached milestone on the projects road */
 .exx-medal {
   position: absolute;
   z-index: 2;
-  top: 1.1rem;
-  right: 1.1rem;
-  width: 52px;
-  height: 52px;
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  border: 1px solid var(--exx-accent, var(--gold-deep));
-  color: var(--exx-accent, var(--gold-deep));
-  background: color-mix(in srgb, var(--exx-accent, var(--gold-deep)) 9%, transparent);
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: 1.7rem;
-  line-height: 1;
+  background: linear-gradient(150deg, #f7cfd9, #efa2b6 55%, #d9728f);
+  border: 2px solid #f7cfd9;
+  color: #2a1020;
+  box-shadow: 0 0 0 6px rgba(239, 162, 182, 0.14), 0 0 26px rgba(239, 162, 182, 0.5);
+  font: 700 1.05rem / 1 var(--mono);
   user-select: none;
 }
 
-/* the eyebrow rides the shared glow-pill badge (paper variant) */
+/* the eyebrow rides the shared glow pill, sized like the projects' stage pill */
 .exx-eyebrow {
-  margin: 0 64px 0.9rem 0;
-  align-self: flex-start;
+  margin: 0 64px 0 0;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  background: rgba(239, 162, 182, 0.1);
+  border-color: rgba(239, 162, 182, 0.3);
+}
+.exx-eyebrow .pill-badge__dot {
+  width: 6px;
+  height: 6px;
 }
 .exx-role {
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: calc(var(--fs-h3) * 1.3);
-  line-height: 1.05;
-  letter-spacing: var(--tr-display);
-}
-.exx-role em {
-  font-style: italic;
-  font-weight: 400;
+  margin-top: 0.9rem;
+  font: 600 clamp(1.45rem, 1rem + 1.2vw, 2rem) / 1.15 var(--sans);
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  text-wrap: balance;
 }
 .exx-meta {
-  font-family: var(--mono);
-  font-size: var(--fs-label);
+  margin-top: 0.5rem;
+  font: 400 0.64rem / 1.5 var(--mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-muted);
-  margin-top: 0.7rem;
-}
-.exx-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1.2rem;
+  color: var(--muted);
 }
 /* hairline divider with a single dingbat */
 .exx-div {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  margin: 1.3rem 0 1.1rem;
-  color: var(--ink-muted);
+  margin: 1.2rem 0 1rem;
+  color: var(--gold);
 }
 .exx-div::before,
 .exx-div::after {
   content: "";
   height: 1px;
   flex: 1;
-  background: var(--ink-line);
+  background: rgba(248, 244, 236, 0.12);
 }
 .exx-div span {
   font-size: 0.6rem;
@@ -361,12 +295,10 @@ const css = /* css */ `
   opacity: 0.7;
 }
 .exx-desc {
-  font-family: var(--body);
-  font-weight: 300;
-  font-size: var(--fs-body-sm);
-  line-height: 1.62;
-  color: var(--ink-muted);
-  max-width: 62ch;
+  font: 300 clamp(0.92rem, 0.88rem + 0.15vw, 0.98rem) / 1.62 var(--body);
+  color: color-mix(in srgb, var(--fg) 82%, transparent);
+  max-width: 64ch;
+  text-wrap: pretty;
 }
 
 /* ghost word (hidden in fallback; shown on the pinned stage) */
@@ -385,8 +317,7 @@ const css = /* css */ `
 }
 
 /* ----------------------------------------------------------------- MOBILE
-   The dossiers lose their ±1° tilt — slanted running text is the one thing a
-   phone reader cannot forgive — and the description prints at full 16px. */
+   Tighter padding and a smaller medal; the description prints at full 16px. */
 @media (max-width: 767.98px) {
   .exx-stage {
     padding: 3.5rem var(--pad);
@@ -397,47 +328,37 @@ const css = /* css */ `
   .exx-track {
     gap: 1.4rem;
   }
-  .exx-card,
-  .exx-slide:nth-child(odd) .exx-card {
-    rotate: 0deg;
+  .exx-card {
     padding: 1.3rem 1.1rem 1.4rem;
-    box-shadow: 0 18px 44px rgba(12, 8, 12, 0.45);
-  }
-  .exx-card::after {
-    inset: 7px;
+    border-radius: 16px;
   }
   .exx-medal {
-    top: 0.9rem;
-    right: 0.9rem;
-    width: 40px;
-    height: 40px;
-    font-size: 1.25rem;
+    top: 1rem;
+    right: 1rem;
+    width: 38px;
+    height: 38px;
+    font-size: 0.85rem;
+    box-shadow: 0 0 0 4px rgba(239, 162, 182, 0.14), 0 0 18px rgba(239, 162, 182, 0.45);
   }
   .exx-eyebrow {
     margin: 0 48px 0.8rem 0;
   }
   .exx-role {
-    font-size: clamp(1.5rem, 6.6vw, 1.85rem);
+    font-size: clamp(1.4rem, 6.2vw, 1.75rem);
   }
   .exx-meta {
-    font-size: 0.64rem;
+    font-size: 0.6rem;
     letter-spacing: 0.1em;
     line-height: 1.6;
-    margin-top: 0.55rem;
-  }
-  .exx-chips {
-    margin-top: 0.9rem;
-    gap: 0.4rem;
   }
   .exx-div {
     margin: 1rem 0 0.9rem;
   }
   .exx-desc {
     font-size: 0.97rem;
-    font-weight: 400;
     line-height: 1.62;
     max-width: none;
-    color: rgba(30, 21, 32, 0.8);
+    color: color-mix(in srgb, var(--fg) 86%, transparent);
   }
 }
 
@@ -480,7 +401,7 @@ const css = /* css */ `
     display: grid;
     place-items: center;
     /* top padding now clears the crest so the centred card sits below it */
-    padding: clamp(9rem, 23vh, 14rem) var(--pad) clamp(3.4rem, 8vh, 5rem);
+    padding: clamp(9.5rem, 25vh, 14.5rem) var(--pad) clamp(3.4rem, 8vh, 5rem);
   }
   .exx-ghostbox {
     display: grid;
@@ -497,7 +418,9 @@ const css = /* css */ `
      the wheel to the card only while it has more to scroll, then the page
      takes over again. */
   .exx-card {
-    max-height: calc(100svh - 15rem);
+    /* the slide's content box — the space left under the crest — so a long
+       dossier never rides up into the title */
+    max-height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
   }
@@ -513,7 +436,7 @@ const css = /* css */ `
     padding-bottom: 1.45rem;
   }
   .exx-role {
-    font-size: calc(var(--fs-h3) * 1.12);
+    font-size: clamp(1.3rem, 1rem + 0.9vw, 1.6rem);
   }
   .exx-desc {
     font-size: 0.84rem;
@@ -526,16 +449,13 @@ const css = /* css */ `
   .exx-meta {
     margin-top: 0.5rem;
   }
-  .exx-chips {
-    margin-top: 0.85rem;
-  }
   .exx-div {
     margin: 1rem 0 0.85rem;
   }
   .exx-medal {
-    width: 44px;
-    height: 44px;
-    font-size: 1.4rem;
+    width: 42px;
+    height: 42px;
+    font-size: 0.9rem;
   }
 }
 `;

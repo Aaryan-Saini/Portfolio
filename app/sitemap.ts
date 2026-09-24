@@ -15,6 +15,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
+      // image sitemap entries: the portrait and the social card, so both can
+      // surface in image search for the name
+      images: [`${SITE_URL}/stamp-portrait.webp`, `${SITE_URL}/og.jpg`],
+    },
+    {
+      // the résumé is its own indexable document (Google indexes PDFs and
+      // takes the result title from the PDF's Title metadata)
+      url: `${SITE_URL}/resume.pdf`,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
   ];
 }

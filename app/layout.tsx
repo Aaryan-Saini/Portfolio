@@ -6,7 +6,7 @@ import {
   SITE_NAME,
   SITE_TITLE,
   SITE_DESCRIPTION,
-  profilePageSchema,
+  jsonLd,
 } from "@/lib/site";
 import { asset } from "@/lib/asset";
 /* Lenis' own base rules (height:auto, overflow:clip while stopped, overscroll
@@ -74,11 +74,18 @@ export const metadata: Metadata = {
   creator: SITE_NAME,
   keywords: [
     "Aaryan Kumar Saini",
+    "Aaryan Saini",
     "QA Engineer",
+    "Quality Assurance Engineer",
     "Software Tester",
+    "Manual Testing",
     "Test Automation",
     "Playwright",
     "Selenium",
+    "Cypress",
+    "API Testing",
+    "Postman",
+    "k6",
     "Web Developer",
     "Portfolio",
   ],
@@ -112,10 +119,29 @@ export const metadata: Metadata = {
       },
     ],
   },
+  /* Search Console / Bing Webmaster verification tags — a vercel.app domain
+     cannot be verified by DNS, so the HTML-tag method is the way in. Set
+     NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION / NEXT_PUBLIC_BING_SITE_VERIFICATION
+     (the content="…" value each tool gives you) in the Vercel project; nothing
+     is emitted while they are unset. */
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    /* allow full-length snippets and video previews (the project reels) as
+       well as large image previews */
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -152,12 +178,12 @@ export default function RootLayout({
               'document.documentElement.classList.add(s?"plx-seen":"plx-lock")}catch(e){document.documentElement.classList.add("plx-lock")}',
           }}
         />
-        {/* schema.org Person — see lib/site.ts. Rendered as a plain script tag
-            (not next/script) so it is present in the static HTML for crawlers
-            that never execute JavaScript. */}
+        {/* schema.org WebSite + ProfilePage(Person) — see lib/site.ts.
+            Rendered as a plain script tag (not next/script) so it is present
+            in the static HTML for crawlers that never execute JavaScript. */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
       </body>

@@ -9,7 +9,8 @@
    ghost link down to the footer), and — tilted on the right like a sheet left
    on a desk — the résumé itself, drawn as a decorative white leaf with inked
    text-lines, a spinning "QA APPROVED" wax-seal badge pinned to its corner,
-   and a script signature in the lower margin.
+   and a script signature in the lower margin. On single-column screens the
+   sheet moves up between the lede and the buttons.
    ========================================================================== */
 
 import { useRef, type CSSProperties } from "react";
@@ -495,13 +496,27 @@ html.no-js .rsx-band[data-rvl] {
 }
 
 /* ------------------------------------------------------------ responsive */
+/* single column: the sheet sits between the lede and the buttons, so the
+   document is shown before the call to download it. The copy column
+   dissolves (display: contents) and its children join the grid directly —
+   title and lede first, then the sheet, then the actions (order: 1). */
 @media (max-width: 899px) {
   .rsx-grid {
     grid-template-columns: 1fr;
-    gap: clamp(3.2rem, 9vw, 4.5rem);
+    gap: 0;
+    justify-items: center;
+    text-align: center;
+  }
+  .rsx-copy {
+    display: contents;
+  }
+  .rsx-actions,
+  .rsx-ghostrow {
+    order: 1;
   }
   .rsx-sheetwrap {
     padding-left: 26px;
+    margin-top: clamp(2rem, 6vw, 3rem);
   }
   .rsx-sheet {
     width: min(340px, 100%);
@@ -521,9 +536,6 @@ html.no-js .rsx-band[data-rvl] {
     gap: 0.55rem;
     padding: 0.3rem 1.1rem;
   }
-  .rsx-grid {
-    gap: 2.6rem;
-  }
   .rsx-lede {
     font-size: 1rem;
     margin-top: 1.1rem;
@@ -531,7 +543,7 @@ html.no-js .rsx-band[data-rvl] {
   .rsx-actions {
     flex-direction: column;
     gap: 0.7rem;
-    margin-top: 1.6rem;
+    margin-top: 2.2rem;
     width: 100%;
   }
   .rsx-download {

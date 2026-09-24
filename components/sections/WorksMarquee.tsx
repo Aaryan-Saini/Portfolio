@@ -145,6 +145,9 @@ export default function WorksMarquee() {
               <span className="wmx-title__script" data-rvl="up">
                 Sneak <em>Peek</em>
               </span>
+              {/* both halves are display:block, so this space never renders —
+                  it keeps the heading's text "Sneak Peek Of My Craft" for
+                  crawlers and screen readers instead of "PeekOf" */}{" "}
               <span
                 className="wmx-title__serif"
                 data-rvl="up"
