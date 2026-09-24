@@ -10,8 +10,9 @@
    Method ledger that follows.
    ========================================================================== */
 
-import type { CSSProperties } from "react";
-import { Ticker, Ornament, Crosshair, LaurelBranch } from "@/components/ui/editorial";
+import { useState, type CSSProperties } from "react";
+import { Ticker, Ornament, Crosshair, LaurelBranch, TornEdge } from "@/components/ui/editorial";
+import TornPaperEdge from "@/components/ui/TornPaperEdge";
 import { asset } from "@/lib/asset";
 
 /* ------------------------------------------------------------------- data */
@@ -106,11 +107,28 @@ function CardRun({ hidden = false }: { hidden?: boolean }) {
 }
 
 /* -------------------------------------------------------------- component */
+/* this section's ground — a deeper aubergine than the site plum, so its
+   torn edge reads as a separate sheet rising into the glow above */
+const WMX_PAPER: [number, number, number] = [0.082, 0.047, 0.102]; // #150c1a
+
 export default function WorksMarquee() {
+  /* the WebGL tear reports in once it draws; until then (and without WebGL)
+     the static SVG tear keeps the edge */
+  const [glTear, setGlTear] = useState(false);
   return (
-    <section className="edt-paper edt-section wmx-root">
-      {/* the torn boundary into the dark Method section below is drawn by
-          MethodStack (TornPaperEdge, a scroll-driven WebGL tear) */}
+    <section className={`edt-paper edt-section wmx-root${glTear ? " has-gl-tear" : ""}`}>
+      {/* the torn boundary in from Featured Projects: this section's paper
+          tears up into the rose glow at the foot of the case files (the same
+          scroll-driven tear the hero ends on), hung above the section's top
+          over the clearance Featured Projects leaves for it */}
+      <TornPaperEdge
+        className="wmx-tear"
+        paperSide="bottom"
+        paper={WMX_PAPER}
+        transition={WMX_PAPER}
+        onReady={() => setGlTear(true)}
+      />
+      <TornEdge side="top" color="#150c1a" seed={7} className="wmx-tear-fallback" />
 
       <div className="edt-rules wmx-rules" aria-hidden="true" />
 
@@ -185,20 +203,33 @@ export default function WorksMarquee() {
 /* --------------------------------------------------------------------- css */
 const css = /* css */ `
 .wmx-root {
-  /* no overflow hidden here — the torn edge must poke below the section */
-  /* the torn strip that opens MethodStack already carries ~200px of paper
-     above its tear line, so this only needs a short breath under the ticker —
-     a tall pad here reads as a blank hole between the two sections */
-  padding-bottom: clamp(1.6rem, 3.2vw, 3rem);
+  --wmx-tear-h: 320px;
+  /* the section's standard bottom padding (.edt-section) — the dossier
+     follows straight on */
+  padding-bottom: clamp(2.8rem, 6vw, 5rem);
+  /* deeper aubergine, easing back to the site plum over the last stretch so
+     the dossier below starts without a seam */
+  background: linear-gradient(#150c1a 0, #150c1a calc(100% - 26vh), var(--night) 100%);
+}
+/* the torn strip hangs above the section's top edge */
+.wmx-tear,
+.wmx-tear-fallback {
+  pointer-events: none;
+}
+.wmx-tear {
+  position: absolute;
+  left: 0;
+  top: calc(-1 * var(--wmx-tear-h));
+  z-index: 5;
+  display: block;
+  width: 100%;
+  height: var(--wmx-tear-h);
+}
+.wmx-root.has-gl-tear .wmx-tear-fallback {
+  display: none;
 }
 .wmx-inner {
   width: 100%;
-}
-/* the column hairlines would stop dead where the tear strip begins (it paints
-   above them) — fade them out over the last stretch of paper instead */
-.wmx-rules {
-  -webkit-mask-image: linear-gradient(#000 calc(100% - 320px), transparent 100%);
-  mask-image: linear-gradient(#000 calc(100% - 320px), transparent 100%);
 }
 
 /* ---------------------------------------------------------------- heading */
@@ -332,10 +363,10 @@ const css = /* css */ `
      sides is what makes stacked cards look pasted on */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 -1px 0 rgba(16, 17, 44, 0.05),
-    0 1px 2px rgba(16, 17, 44, 0.1),
-    0 10px 18px -6px rgba(16, 17, 44, 0.16),
-    0 26px 44px -12px rgba(16, 17, 44, 0.18);
+    inset 0 -1px 0 rgba(21, 15, 22, 0.05),
+    0 1px 2px rgba(21, 15, 22, 0.1),
+    0 10px 18px -6px rgba(21, 15, 22, 0.16),
+    0 26px 44px -12px rgba(21, 15, 22, 0.18);
   transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
 }
 /* grain sits under the content, so it textures the stock without speckling
@@ -368,9 +399,9 @@ const css = /* css */ `
     transform: rotate(0deg) translateY(-8px);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.85),
-      0 2px 4px rgba(16, 17, 44, 0.12),
-      0 16px 26px -8px rgba(16, 17, 44, 0.2),
-      0 38px 62px -16px rgba(16, 17, 44, 0.22);
+      0 2px 4px rgba(21, 15, 22, 0.12),
+      0 16px 26px -8px rgba(21, 15, 22, 0.2),
+      0 38px 62px -16px rgba(21, 15, 22, 0.22);
   }
 }
 
@@ -388,14 +419,14 @@ const css = /* css */ `
   transform: translateX(-50%) rotate(-2.4deg);
   background: linear-gradient(
     100deg,
-    rgba(214, 236, 246, 0.5),
-    rgba(232, 246, 252, 0.68) 45%,
-    rgba(206, 231, 243, 0.5)
+    rgba(246, 226, 196, 0.5),
+    rgba(252, 240, 222, 0.68) 45%,
+    rgba(240, 218, 186, 0.5)
   );
   /* faint darker ends read as the torn edges of a cut strip */
-  border-left: 1px solid rgba(150, 190, 212, 0.28);
-  border-right: 1px solid rgba(150, 190, 212, 0.28);
-  box-shadow: 0 1px 2px rgba(16, 17, 44, 0.12);
+  border-left: 1px solid rgba(196, 160, 112, 0.28);
+  border-right: 1px solid rgba(196, 160, 112, 0.28);
+  box-shadow: 0 1px 2px rgba(21, 15, 22, 0.12);
   pointer-events: none;
 }
 /* centred, leaning left */
@@ -458,7 +489,7 @@ const css = /* css */ `
   /* the print sits ON the mount: hairline edge + its own drop shadow */
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--ink) 20%, transparent),
-    0 2px 5px rgba(16, 17, 44, 0.22);
+    0 2px 5px rgba(21, 15, 22, 0.22);
 }
 /* duotone print-plate: greyscale art with a midnight-cyan wash so the old
    gold/red icon renders sit inside the site's palette */
@@ -467,7 +498,7 @@ const css = /* css */ `
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(160deg, rgba(135, 206, 235, 0.16), rgba(21, 23, 61, 0.28));
+  background: linear-gradient(160deg, rgba(239, 162, 182, 0.16), rgba(30, 21, 32, 0.28));
   mix-blend-mode: color;
 }
 .wmx-card__art img {
@@ -539,7 +570,7 @@ const css = /* css */ `
   /* matches the print: hairline edge + its own shadow, not a flat bordered box */
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--ink) 20%, transparent),
-    0 2px 5px rgba(16, 17, 44, 0.22);
+    0 2px 5px rgba(21, 15, 22, 0.22);
   background-color: var(--parch-2);
   background-image: var(--paper-noise);
   padding: 0.8rem;
@@ -653,6 +684,9 @@ html.is-touch .wmx-card { scroll-snap-align: center; }
    Bigger cards (~62vw, one and a half on screen), the vertical padding the
    desktop marquee needed for its tilt trimmed, and a swipe hint. */
 @media (max-width: 767.98px) {
+  .wmx-root {
+    --wmx-tear-h: 220px;
+  }
   .wmx-root {
     padding-bottom: 2.8rem;
   }

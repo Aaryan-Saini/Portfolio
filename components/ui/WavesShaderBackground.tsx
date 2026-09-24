@@ -8,13 +8,22 @@
    IntersectionObserver is concerned it is "visible" from the first frame
    while being completely covered. Everything here is therefore gated on the
    real uncover — the distance to the end of the page, from the shared Lenis
-   scroll state — pre-armed by one viewport so a live frame exists before the
-   first footer pixel shows. The GL context and the shader compile/link are
-   deferred by lib/gl.ts (they start when the last in-flow section nears the
-   viewport, or in an idle slot after load — never inside React's mount
-   flush), and the program links on a background thread where the browser
-   allows it. The loop runs at 30 fps (u_time drifts at -0.67/s, so more is
-   invisible) and the backing store is capped at DPR 2 (1.5 on touch devices).
+   scroll state: one viewport before it a single still frame is drawn (so a
+   finished frame exists before the first footer pixel shows), and the loop
+   only runs while the footer is actually on screen. The GL context and the
+   shader compile/link are deferred by lib/gl.ts (they start when the last
+   in-flow section nears the viewport, or in an idle slot after load — never
+   inside React's mount flush), and the program links on a background thread
+   where the browser allows it.
+
+   Cost: the field renders at full resolution (DPR capped at 2, 1.5 on touch)
+   with its per-pixel film grain, exactly as designed. What made the last
+   sections stutter was (a) the loop running a whole viewport before the
+   footer was visible, i.e. while Honours and the Résumé were on screen, and
+   (b) the shader's 5-tap blur, which ran the whole field five times per pixel
+   for a 0.04 softening that is invisible on a gradient this soft. (a) is gated
+   above; (b) is off. The loop runs at 30 fps (u_time drifts at -0.67/s, so
+   more is invisible).
    ========================================================================== */
 
 import { useEffect, useRef } from 'react';
@@ -272,9 +281,9 @@ void main() {
 `;
 
 const FPS_CAP = 30;
-/* #1A1423 — u_colors[0] and .footer's own background colour, so the buffer is
+/* #1A1020 — u_colors[0] and .footer's own background colour, so the buffer is
    indistinguishable from the first frame before that frame exists */
-const GROUND: [number, number, number] = [0.10196078, 0.07843137, 0.1372549];
+const GROUND: [number, number, number] = [0.10196078, 0.0627451, 0.1254902];
 
 export default function WavesShaderBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -312,26 +321,29 @@ export default function WavesShaderBackground() {
       const uSpaceLoc = gl.getUniformLocation(program, 'u_space');
       const uCursorLoc = gl.getUniformLocation(program, 'u_cursor');
 
-      // Color definitions: #1A1423, #B75D69, #EACDC2, #FFF5EB (4 colors used)
+      // The hero's dusk, bottom to top: plum night, berry, the rose band
+      // (kept mid-tone, never pale, so the light email / social row that
+      // drifts over it holds its contrast), then deepening plum (8 colours)
       const colorArray = new Float32Array([
-        0.10196078, 0.07843137, 0.1372549, // #1A1423
-        0.71764706, 0.36470588, 0.41176471, // #B75D69
-        0.91764706, 0.80392157, 0.76078431, // #EACDC2
-        1.0,        0.96078431, 0.92156863, // #FFF5EB
-        0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0
+        0.10196078, 0.0627451, 0.1254902, // #1A1020
+        0.55686275, 0.22745098, 0.35294118, // #8E3A5A
+        0.78431373, 0.40784314, 0.52156863, // #C86885
+        0.85490196, 0.54117647, 0.62745098, // #DA8AA0
+        0.69019608, 0.45098039, 0.54117647, // #B0738A
+        0.41960784, 0.22745098, 0.36078431, // #6B3A5C
+        0.22745098, 0.12156863, 0.21176471, // #3A1F36
+        0.10196078, 0.0627451, 0.1254902, // #1A1020
       ]);
       gl.uniform3fv(uColorsLoc, colorArray);
 
       // Constant Uniforms
       // u_shape: vec4(1.32, 0.49, 0.84, 0.01)
       gl.uniform4f(uShapeLoc, 1.32, 0.49, 0.84, 0.01);
-      // u_surface: vec4(1.73, 1.08, 0.07, 2.00)
-      gl.uniform4f(uSurfaceLoc, 1.73, 1.08, 0.07, 2.00);
-      // u_finish: vec4(2.27, 0.00, 0.040, 0.35)
-      gl.uniform4f(uFinishLoc, 2.27, 0.00, 0.040, 0.35);
+      // u_surface: vec4(1.73, 1.08, 0.0, 1.0) — the dawn colours as they are
+      gl.uniform4f(uSurfaceLoc, 1.73, 1.08, 0.0, 1.0);
+      // u_finish: vec4(0.0, 0.00, 0.0, 0.35) — no hue rotation, no blur (see
+      // the header), the original 0.35 film grain
+      gl.uniform4f(uFinishLoc, 0.0, 0.00, 0.0, 0.35);
       // u_transform: vec4(4984.0, 3.37, 0.40, 1.0)
       gl.uniform4f(uTransformLoc, 4984.0, 3.37, 0.40, 1.0);
       // u_space: vec4(-0.13, 0.05, 0.0, 0.0)
@@ -340,7 +352,7 @@ export default function WavesShaderBackground() {
       gl.uniform4f(uCursorLoc, 0.0, 3.0, 0.54, 0.56);
 
       /* the 0.35 film grain is per device pixel, so desktops keep DPR 2; on
-         touch devices 1.5 is not distinguishable through the 5-tap blur */
+         touch devices 1.5 is indistinguishable */
       const coarse = window.matchMedia('(pointer: coarse)').matches;
       const dprCap = coarse ? 1.5 : 2;
       const startTime = performance.now();
@@ -348,11 +360,12 @@ export default function WavesShaderBackground() {
       let raf = 0;
       let running = false;
       let covered = true;
+      let primed = false;
       let lastFrame = 0;
 
       const resize = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
         footerH = canvas.clientHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
         const width = Math.max(1, Math.round(canvas.clientWidth * dpr));
         const height = Math.max(1, Math.round(canvas.clientHeight * dpr));
         if (canvas.width !== width || canvas.height !== height) {
@@ -364,8 +377,8 @@ export default function WavesShaderBackground() {
 
       const render = () => {
         const elapsedSeconds = (performance.now() - startTime) * 0.001;
-        // u_scene: vec4(width, height, seconds * -0.67, 4.0)
-        gl.uniform4f(uSceneLoc, canvas.width, canvas.height, elapsedSeconds * -0.67, 4.0);
+        // u_scene: vec4(width, height, seconds * -0.67, 8.0)
+        gl.uniform4f(uSceneLoc, canvas.width, canvas.height, elapsedSeconds * -0.67, 8.0);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
       };
 
@@ -389,11 +402,19 @@ export default function WavesShaderBackground() {
       };
 
       /* uncover gate: #page's bottom edge sits footerH above the document end,
-         so the footer starts showing at limit - scroll < footerH. Arm one
-         viewport earlier so a live frame is guaranteed before any pixel of it
-         is visible, and pause again as soon as it is covered. */
+         so the footer starts showing at limit - scroll < footerH. One viewport
+         before that, draw a single current frame (so what is uncovered is
+         already live); animate only while some of the footer is on screen,
+         and pause again as soon as it is covered. */
       const gate = (scroll: number, limit: number) => {
-        const c = limit - scroll >= footerH + window.innerHeight;
+        const left = limit - scroll;
+        if (!primed && left < footerH + window.innerHeight) {
+          primed = true;
+          render();
+        } else if (primed && left >= footerH + window.innerHeight) {
+          primed = false; // re-prime (fresh u_time) on the next approach
+        }
+        const c = left >= footerH;
         if (c !== covered) {
           covered = c;
           sync();

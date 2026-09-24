@@ -411,9 +411,9 @@ html.no-js .rsx-band[data-rvl] {
   background: var(--parch);
   border: 1px solid var(--ink-line);
   box-shadow:
-    0 2px 6px rgba(16, 17, 44, 0.06),
-    0 18px 44px rgba(16, 17, 44, 0.14),
-    0 42px 90px rgba(16, 17, 44, 0.12);
+    0 2px 6px rgba(21, 15, 22, 0.06),
+    0 18px 44px rgba(21, 15, 22, 0.14),
+    0 42px 90px rgba(21, 15, 22, 0.12);
   transform: rotate(2.5deg);
   transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
   padding: clamp(1.6rem, 3.2vw, 2.4rem) clamp(1.4rem, 2.8vw, 2.1rem);
@@ -432,9 +432,9 @@ html.no-js .rsx-band[data-rvl] {
 .rsx-sheetwrap:hover .rsx-sheet {
   transform: rotate(2.5deg) translateY(-8px);
   box-shadow:
-    0 4px 10px rgba(16, 17, 44, 0.07),
-    0 26px 56px rgba(16, 17, 44, 0.17),
-    0 56px 110px rgba(16, 17, 44, 0.14);
+    0 4px 10px rgba(21, 15, 22, 0.07),
+    0 26px 56px rgba(21, 15, 22, 0.17),
+    0 56px 110px rgba(21, 15, 22, 0.14);
 }
 
 /* corner seal */

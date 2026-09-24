@@ -122,7 +122,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#070817",
+  themeColor: "#1a1020",
 };
 
 export default function RootLayout({
@@ -143,12 +143,12 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              /* no-js off; then decide the boot overlay before first paint: a
-                 repeat visit in this tab (or reduced motion) hides the veil
-                 outright, a first visit is scroll-locked from the very first
-                 frame — see components/PreloaderEditorial.tsx */
+              /* no-js off; then decide the boot overlay before first paint: it
+                 plays on every load (scroll-locked from the very first frame),
+                 except under reduced motion, which hides the veil outright —
+                 see components/Preloader.tsx */
               'document.documentElement.classList.remove("no-js");' +
-              'try{var s=sessionStorage.getItem("plx_seen")==="1"||matchMedia("(prefers-reduced-motion: reduce)").matches;' +
+              'try{var s=matchMedia("(prefers-reduced-motion: reduce)").matches;' +
               'document.documentElement.classList.add(s?"plx-seen":"plx-lock")}catch(e){document.documentElement.classList.add("plx-lock")}',
           }}
         />

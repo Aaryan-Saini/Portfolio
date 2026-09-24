@@ -34,7 +34,7 @@
    of four. Uniform and attribute locations are resolved once.
    ========================================================================== */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type MutableRefObject } from 'react';
 import { subscribeScroll } from '@/lib/lenis';
 import { linkPrograms, scheduleGlInit } from '@/lib/gl';
 
@@ -52,6 +52,10 @@ export type TornPaperEdgeProps = {
       below, this site's Method boundary); 'bottom' = the reference's own
       orientation, paper below a dark section */
   paperSide?: 'top' | 'bottom';
+  /** filled with a "redraw next frame" callback once the strip is drawing —
+      for a host that moves the strip itself (the hero's pinned paper), so the
+      tear follows every frame of that motion instead of the 12 fps idle floor */
+  redrawRef?: MutableRefObject<(() => void) | null>;
 };
 
 const NOISE_SCALE = 2.9;
@@ -261,14 +265,18 @@ type Target = { tex: WebGLTexture; fbo: WebGLFramebuffer; w: number; h: number }
 
 export default function TornPaperEdge({
   className = '',
-  paper = [1, 1, 1],
-  transition = [1, 1, 1],
+  /* --parch, the site's peach-cream paper (#f6ebdc) */
+  paper = [0.965, 0.922, 0.863],
+  transition = [0.965, 0.922, 0.863],
   onReady,
   paperSide = 'top',
+  redrawRef,
 }: TornPaperEdgeProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const readyRef = useRef(onReady);
   readyRef.current = onReady;
+  const hostRedrawRef = useRef(redrawRef);
+  hostRedrawRef.current = redrawRef;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -528,8 +536,11 @@ export default function TornPaperEdge({
       document.addEventListener('visibilitychange', sync);
       /* only now — a real frame exists — may the host drop its SVG fallback */
       readyRef.current?.();
+      const hostRedraw = hostRedrawRef.current;
+      if (hostRedraw) hostRedraw.current = () => { dirty = true; };
 
       return () => {
+        if (hostRedraw) hostRedraw.current = null;
         running = false;
         cancelAnimationFrame(raf);
         io.disconnect();

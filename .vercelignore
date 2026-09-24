@@ -4,3 +4,6 @@ out
 scripts
 tsconfig.tsbuildinfo
 .claude
+# local secrets / link state written by `vercel link` — never upload
+.env*
+.vercel

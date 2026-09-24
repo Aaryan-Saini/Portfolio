@@ -1,7 +1,10 @@
 /* ============================================================================
    AARYAN KUMAR SAINI — QA Engineer & Developer
    "Field Notes" edition — vintage-editorial reframe.
-   Palette: sky blue #87ceeb on midnight indigo + white paper.
+   Palette: "dusk", taken from the hero: every section below it sits on the
+   hero's night side (a deep dusk plum), the rose band of the hero's sky is
+   the accent (berry on cream), and warm cream paper carries the paper
+   objects (cards, prints, the résumé leaf).
    Serif: Cormorant Garamond · Sans: Space Grotesk · Mono: Space Mono
    Body: Roboto · Script: Pinyon Script
    ========================================================================== */
@@ -18,29 +21,41 @@
 
 /* ---------------------------------------------------------------- Tokens */
 :root {
-  /* palette — unchanged from the previous build */
-  --ink: #15173d;
-  --ink-2: #1c1e4d;
-  --wine-900: #10112c;
-  --wine-800: #121434;
-  --wine-700: #15173d;
-  --wine-600: #1c1e4d;
-  --parch: #ffffff;
-  --parch-2: #effafe;
-  --parch-3: #e3f5fd;
-  --gold: #87ceeb;
-  --gold-soft: #b1dff2;
-  --gold-deep: #1e84ae;
+  /* palette — "dusk", from the hero (lib/horizonHero.ts sky + night side).
+     The token names are historical: --wine-* / --night are the ground,
+     --gold-* the accent, --parch-* the paper. */
+  --ink: #1e1520; /* plum-black ink — text on cream paper objects */
+  --ink-2: #2a1c28;
+  --ink-dark: #1e1520; /* the same ink, never re-scoped (see .edt-paper) */
+  --night: #1a1020; /* dusk plum — the hero's night side, just below the limb */
+  --wine-900: #1a1020;
+  --wine-800: #22162a;
+  --wine-700: #1e1520;
+  --wine-600: #2d1f36;
+  --parch: #f6ebdc; /* peach-cream paper, as if lit by the sunrise */
+  --parch-2: #f0e2cf;
+  --parch-3: #e8d4bb;
+  --gold: #efa2b6; /* dawn rose — the hero's rose sky band; accent on plum */
+  --gold-soft: #f7cfd9; /* pale rose */
+  --gold-deep: #a63e5c; /* berry — accent on cream paper (5.2:1 on --parch) */
+  --dawn-rose: #d8b3c6; /* the mauve band above the glow */
+
+  /* a glow for a screen-tall (pinned) stage: the plum night at the top, deepening
+     to a rose-magenta glow rising from the foot (the dusk version of the
+     sunrise glow the Experience dossier used to sit on) */
+  --dusk-stage:
+    radial-gradient(130% 70% at 50% 110%, rgba(232, 70, 150, 0.62) 0%, rgba(239, 130, 170, 0.3) 32%, rgba(154, 117, 173, 0.12) 54%, transparent 74%),
+    linear-gradient(180deg, #1a1020 0%, #1d1124 36%, #29142f 64%, #3d1636 86%, #4a1839 100%);
 
   --bg: var(--wine-900);
-  --fg: var(--parch);
-  --muted: rgba(255, 255, 255, 0.55);
-  --line: rgba(255, 255, 255, 0.16);
+  --fg: #fbf5ec; /* light text on the night ground */
+  --muted: rgba(248, 244, 236, 0.58);
+  --line: rgba(248, 244, 236, 0.16);
 
   /* paper-side equivalents */
-  --ink-muted: rgba(21, 23, 61, 0.62);
-  --ink-line: rgba(21, 23, 61, 0.18);
-  --ink-line-soft: rgba(21, 23, 61, 0.1);
+  --ink-muted: rgba(30, 21, 32, 0.64);
+  --ink-line: rgba(30, 21, 32, 0.18);
+  --ink-line-soft: rgba(30, 21, 32, 0.1);
 
   /* fonts */
   --serif: var(--font-serif, "Cormorant Garamond"), Georgia, serif;
@@ -74,13 +89,6 @@
   --pad: clamp(1.25rem, 5vw, 5.5rem);
   --maxw: 1480px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* how far a .edt-overlap section climbs over the one above it. A small lip
-     on phones, where nothing above is pinned and the climb only eats padding;
-     a whole viewport on the pinned desktop theatre, so the panel slides all
-     the way up over the frozen stage before its own pin takes hold. */
-  --edt-overlap: 56px;
-  --edt-overlap-radius: 18px;
 
   /* paper grain (SVG turbulence, tiled) */
   --paper-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
@@ -222,7 +230,7 @@ body::-webkit-scrollbar {
   background: radial-gradient(
     ellipse at center,
     transparent 72%,
-    rgba(7, 8, 23, 0.14) 100%
+    rgba(12, 8, 12, 0.14) 100%
   );
 }
 
@@ -242,59 +250,33 @@ body::-webkit-scrollbar {
   opacity: 0.14;
   mix-blend-mode: overlay;
 }
-/* Light "field-notes paper" surface */
+/* The former "field-notes paper" sections — black now, like the rest. The ink
+   tokens flip to light here, so everything printed straight on the section
+   (headings, body copy, rules, accents) reads on black without per-section
+   overrides; the cream paper OBJECTS inside (Sneak Peek polaroids, the résumé
+   leaf) put the dark ink back — see .paper-obj below. */
 .edt-paper {
   position: relative;
-  background-color: var(--parch);
-  color: var(--ink);
+  background-color: var(--night);
+  color: var(--fg);
+  --ink: var(--fg);
+  --ink-muted: var(--muted);
+  --ink-line: rgba(246, 235, 220, 0.18);
+  --ink-line-soft: rgba(246, 235, 220, 0.1);
+  --gold-deep: var(--gold);
 }
-.edt-paper::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: var(--paper-noise);
-  opacity: 0.055;
-}
-/* faintly tinted paper */
 .edt-paper--tint {
-  background-color: var(--parch-2);
+  background-color: var(--night);
 }
-
-/* ==================================================== OVERLAPPING SECTIONS
-   A section marked .edt-overlap rides UP over the section above it: it is
-   pulled into the previous section's runway by --edt-overlap, rounds its top
-   corners and casts a shadow upward. When the section above is a pinned
-   sticky theatre (MethodStack), the frozen stage stays put while this panel
-   slides up across the whole viewport — the overlap is the scroll itself,
-   not a tween.
-   The section above must add var(--edt-overlap) back to its own height (or
-   bottom padding, in the unpinned fallback) so its choreography keeps the
-   runway this steals. */
-.edt-overlap {
-  position: relative;
-  z-index: 2;
-  margin-top: calc(-1 * var(--edt-overlap));
-  border-top-left-radius: var(--edt-overlap-radius);
-  border-top-right-radius: var(--edt-overlap-radius);
-  /* cast upward onto the outgoing section, plus a lit hairline along the
-     leading edge so the seam reads as a lifted panel rather than a join.
-     Both sides of this boundary are the same midnight ledger, so the shade
-     and the glint are what separate them — keep them legible. */
-  box-shadow:
-    0 -26px 46px -8px rgba(3, 4, 14, 0.88),
-    0 -60px 110px -30px rgba(3, 4, 14, 0.6),
-    0 -1px 0 color-mix(in srgb, var(--gold) 30%, transparent);
-}
-/* the surface grain overlay is inset:0 — round it with its section */
-.edt-overlap::before {
-  border-radius: inherit;
-}
-@media (min-width: 860px) and (prefers-reduced-motion: no-preference) {
-  :root {
-    --edt-overlap: 100svh;
-    --edt-overlap-radius: clamp(20px, 2.4vw, 34px);
-  }
+/* cream paper objects sitting on a black section: dark ink, ember accents */
+.wmx-card,
+.rsx-sheet {
+  --ink: var(--ink-dark);
+  --ink-muted: rgba(30, 21, 32, 0.64);
+  --ink-line: rgba(30, 21, 32, 0.18);
+  --ink-line-soft: rgba(30, 21, 32, 0.1);
+  --gold-deep: #a63e5c;
+  color: var(--ink);
 }
 
 /* Editorial column rules — retired. The two vertical hairlines at 25.6% and
@@ -372,7 +354,6 @@ body::-webkit-scrollbar {
 }
 .edt-paper .t-accent {
   color: var(--gold-deep);
-  text-shadow: 0 0 1px rgba(21, 23, 61, 0.2);
 }
 .t-lead {
   font-size: var(--fs-lead);
@@ -449,7 +430,7 @@ body::-webkit-scrollbar {
 }
 .btn-solid > .mas {
   background: var(--gold-deep);
-  color: var(--ink);
+  color: var(--ink-dark);
 }
 .btn-solid > .face {
   background: var(--ink);
@@ -463,20 +444,20 @@ body::-webkit-scrollbar {
 }
 .btn-solid:hover {
   border-color: var(--gold-deep);
-  box-shadow: 0 10px 22px -12px rgba(21, 23, 61, 0.55);
+  box-shadow: 0 10px 22px -12px rgba(30, 21, 32, 0.55);
 }
-.edt-dark .btn-solid {
+:is(.edt-dark, .edt-paper) .btn-solid {
   border-color: var(--gold);
 }
-.edt-dark .btn-solid > .face {
+:is(.edt-dark, .edt-paper) .btn-solid > .face {
   background: var(--gold);
-  color: var(--ink);
+  color: var(--ink-dark);
 }
-.edt-dark .btn-solid > .mas {
+:is(.edt-dark, .edt-paper) .btn-solid > .mas {
   background: var(--parch);
-  color: var(--ink);
+  color: var(--ink-dark);
 }
-.edt-dark .btn-solid:hover {
+:is(.edt-dark, .edt-paper) .btn-solid:hover {
   border-color: var(--parch);
 }
 
@@ -571,8 +552,8 @@ body::-webkit-scrollbar {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(135, 206, 235, 0.08);
-  border: 1px solid rgba(135, 206, 235, 0.25);
+  background: rgba(239, 162, 182, 0.08);
+  border: 1px solid rgba(239, 162, 182, 0.25);
   padding: 0.4rem 1.1rem;
   border-radius: 100px;
   font-family: var(--mono);
@@ -580,7 +561,7 @@ body::-webkit-scrollbar {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
-  box-shadow: 0 4px 20px rgba(135, 206, 235, 0.1);
+  box-shadow: 0 4px 20px rgba(239, 162, 182, 0.1);
 }
 .pill-badge__dot {
   flex: none;
@@ -602,15 +583,13 @@ body::-webkit-scrollbar {
     opacity: 0.5;
   }
 }
-/* paper-surface variant — deeper cyan so the pill stays legible on white */
-.edt-paper .pill-badge,
+/* paper-surface variant — ember, for pills on cream paper objects */
 .pill-badge--paper {
-  background: rgba(30, 132, 174, 0.08);
-  border-color: rgba(30, 132, 174, 0.5);
+  background: rgba(166, 62, 92, 0.08);
+  border-color: rgba(166, 62, 92, 0.5);
   color: var(--gold-deep);
-  box-shadow: 0 4px 18px rgba(30, 132, 174, 0.16);
+  box-shadow: 0 4px 18px rgba(166, 62, 92, 0.16);
 }
-.edt-paper .pill-badge .pill-badge__dot,
 .pill-badge--paper .pill-badge__dot {
   background: var(--gold-deep);
   box-shadow: 0 0 10px var(--gold-deep);
@@ -738,7 +717,7 @@ body::-webkit-scrollbar {
 .spinbadge--solid {
   background: var(--ink);
   color: var(--parch-3);
-  box-shadow: 0 10px 30px rgba(16, 17, 44, 0.35);
+  box-shadow: 0 10px 30px rgba(21, 15, 22, 0.35);
 }
 .spinbadge--solid .spinbadge__core {
   border-color: rgba(255, 255, 255, 0.35);
@@ -814,7 +793,7 @@ body::-webkit-scrollbar {
     linear-gradient(#000 0 0) center /
       calc(100% - var(--stamp-r) * 2.4) calc(100% - var(--stamp-r) * 2.4)
       no-repeat;
-  filter: drop-shadow(0 14px 34px rgba(7, 8, 23, 0.45));
+  filter: drop-shadow(0 14px 34px rgba(12, 8, 12, 0.45));
 }
 .stamp__art {
   position: relative;

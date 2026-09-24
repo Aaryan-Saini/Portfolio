@@ -95,15 +95,15 @@ body.has-cursor [data-cursor] {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(135, 206, 235, .6)
+    box-shadow: 0 0 0 0 rgba(239, 162, 182, .6)
   }
 
   70% {
-    box-shadow: 0 0 0 9px rgba(135, 206, 235, 0)
+    box-shadow: 0 0 0 9px rgba(239, 162, 182, 0)
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(135, 206, 235, 0)
+    box-shadow: 0 0 0 0 rgba(239, 162, 182, 0)
   }
 }
 
@@ -517,7 +517,7 @@ body.nav-open .overlay-nav__list li:nth-child(8)::after { transition-delay: .65s
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(160deg, rgba(135, 206, 235, .3), rgba(21, 23, 61, .55));
+  background: linear-gradient(160deg, rgba(239, 162, 182, .3), rgba(30, 21, 32, .55));
   mix-blend-mode: color;
   pointer-events: none;
 }
@@ -528,7 +528,7 @@ body.nav-open .overlay-nav__list li:nth-child(8)::after { transition-delay: .65s
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(0deg, rgba(16, 17, 44, .8), transparent 38%);
+  background: linear-gradient(0deg, rgba(21, 15, 22, .8), transparent 38%);
   pointer-events: none;
 }
 
@@ -750,7 +750,7 @@ body.nav-open .overlay-nav__rail-foot { transition-delay: .62s; }
   transform: translateY(-3px);
   border-color: var(--gold);
   color: var(--wine-900);
-  box-shadow: 0 10px 22px rgba(8, 9, 26, .42);
+  box-shadow: 0 10px 22px rgba(12, 8, 12, .42);
 }
 
 .overlay-nav__contact a.overlay-nav__icon:hover::before,
@@ -986,7 +986,7 @@ body.nav-open .overlay-nav__col:nth-child(3) { transition-delay: .74s; }
   --line: rgba(255, 255, 255, .22);
   --muted: rgba(255, 255, 255, .74);
   /* WebGL Shader Background fallback */
-  background: #1a1423;
+  background: #1a1020;
   padding-top: 0;
 }
 
@@ -1153,14 +1153,14 @@ html.no-js .footer {
 }
 
 /* the word that cycles: test / break / automate / validate / ship / refine /
-   perfect. Deliberately NOT --gold-soft (#b1dff2) — that pale cyan disappeared
+   perfect. Deliberately NOT --gold-soft (#f7cfd9) — that pale tone disappeared
    against the shader's light cream bands as they drifted behind it. */
 .footer__cta em {
   display: inline-block;
   font-family: var(--serif);
   font-style: italic;
   font-weight: 500;
-  color: #2d59c9;
+  color: var(--gold); /* dawn rose — reads on the dark plum top of the footer sky */
   letter-spacing: 0;
   transition: opacity .32s var(--ease), transform .32s var(--ease);
 }
@@ -1178,7 +1178,7 @@ html.no-js .footer {
   overflow: hidden;
   transform: rotate(2.5deg);
   border: 4px solid #ffffff;
-  box-shadow: 0 30px 60px rgba(21, 23, 61, .28), 0 4px 12px rgba(21, 23, 61, .18);
+  box-shadow: 0 30px 60px rgba(30, 21, 32, .28), 0 4px 12px rgba(30, 21, 32, .18);
 }
 
 .footer__card img,
@@ -1309,7 +1309,7 @@ html.no-js .footer {
   transform: translateY(-4px);
   border-color: var(--gold);
   color: var(--wine-900);
-  box-shadow: 0 12px 26px rgba(8, 9, 26, .42);
+  box-shadow: 0 12px 26px rgba(12, 8, 12, .42);
 }
 
 .footer__icon:hover::before,
@@ -1408,7 +1408,7 @@ html.no-js .footer {
   font-family: var(--serif);
   font-style: italic;
   font-size: clamp(1.4rem, 3vw, 2.4rem);
-  color: rgba(21, 23, 61, .72);
+  color: rgba(30, 21, 32, .72);
   white-space: nowrap;
 }
 
@@ -1540,10 +1540,10 @@ html.no-js .footer {
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
-    0 6px 20px rgba(21, 23, 61, 0.10),
-    0 1px 2px rgba(21, 23, 61, 0.06),
+    0 6px 20px rgba(30, 21, 32, 0.10),
+    0 1px 2px rgba(30, 21, 32, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px rgba(21, 23, 61, 0.05);
+    inset 0 -1px 1px rgba(30, 21, 32, 0.05);
   transition: transform .22s var(--ease), background .22s, border-color .22s, color .22s, box-shadow .22s;
 }
 
@@ -1554,7 +1554,7 @@ html.no-js .footer {
   border-color: rgba(110, 79, 27, 0.4);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.46));
   box-shadow:
-    0 12px 30px rgba(21, 23, 61, 0.15),
+    0 12px 30px rgba(30, 21, 32, 0.15),
     0 0 0 1px rgba(110, 79, 27, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 1);
 }
@@ -1568,7 +1568,7 @@ html.no-js .footer {
 }
 
 .footer__social:hover .footer__social-icon {
-  color: #242761;
+  color: var(--gold-deep);
 }
 
 .footer__social-icon svg {

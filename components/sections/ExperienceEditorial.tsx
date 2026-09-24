@@ -31,7 +31,7 @@ const DOSSIERS: Dossier[] = [
     company: "KAYEASE · ON-SITE · FULL-TIME · DEC 2025 — PRESENT",
     ghost: "TESTING",
     monogram: "K",
-    accent: "var(--gold)" /* #87ceeb */,
+    accent: "var(--gold)" /* #efa2b6 */,
     chips: [
       "500+ Test Cases",
       "3 Flagship Products",
@@ -46,7 +46,7 @@ const DOSSIERS: Dossier[] = [
     company: "GROWLY · REMOTE · MAY – JUL 2025",
     ghost: "ANALYTICS",
     monogram: "G",
-    accent: "var(--gold-soft)" /* #b1dff2 */,
+    accent: "var(--gold-soft)" /* #f7cfd9 */,
     chips: [
       "100+ Datasets (100MB)",
       "3 Interactive Dashboards",
@@ -61,7 +61,7 @@ const DOSSIERS: Dossier[] = [
     company: "SAATVIK FINCORP · ON-SITE · MAY – JUL 2025",
     ghost: "DEVELOPMENT",
     monogram: "S",
-    accent: "var(--gold-deep)" /* #1e84ae */,
+    accent: "var(--gold-deep)" /* #a63e5c */,
     chips: [
       "Led 3-Person Team",
       "10+ Page Financial Site",
@@ -140,7 +140,7 @@ export default function ExperienceEditorial() {
   return (
     <section
       id="experience"
-      className="edt-dark edt-overlap exx-sec"
+      className="edt-dark exx-sec"
       ref={rootRef}
     >
       <div className="exx-wrap" ref={wrapRef}>
@@ -211,11 +211,10 @@ const css = /* css */ `
 .exx-sec {
   position: relative;
 }
-/* .edt-overlap rounds the section's top corners; the sticky stage clips its
-   own contents (ghost words, card shadows) to the same curve so nothing
-   squares off the lifted edge as the panel climbs the Method ledger. */
 .exx-stage {
-  border-radius: inherit;
+  /* plum above, a rose-magenta glow rising from the foot of the stage */
+  background: var(--dusk-stage);
+  background-color: var(--wine-900);
 }
 
 /* ------------- fallback-first: unpinned vertical stack of dossier cards */
@@ -261,8 +260,8 @@ const css = /* css */ `
   border: 1px solid var(--ink-line);
   padding: clamp(1.7rem, 1rem + 2.2vw, 2.6rem) clamp(1.4rem, 0.9rem + 2.4vw, 2.8rem);
   box-shadow:
-    0 34px 80px rgba(7, 8, 23, 0.55),
-    0 8px 22px rgba(7, 8, 23, 0.35);
+    0 34px 80px rgba(12, 8, 12, 0.55),
+    0 8px 22px rgba(12, 8, 12, 0.35);
   rotate: 1deg;
 }
 .exx-slide:nth-child(odd) .exx-card {
@@ -402,7 +401,7 @@ const css = /* css */ `
   .exx-slide:nth-child(odd) .exx-card {
     rotate: 0deg;
     padding: 1.3rem 1.1rem 1.4rem;
-    box-shadow: 0 18px 44px rgba(7, 8, 23, 0.45);
+    box-shadow: 0 18px 44px rgba(12, 8, 12, 0.45);
   }
   .exx-card::after {
     inset: 7px;
@@ -438,7 +437,7 @@ const css = /* css */ `
     font-weight: 400;
     line-height: 1.62;
     max-width: none;
-    color: rgba(21, 23, 61, 0.8);
+    color: rgba(30, 21, 32, 0.8);
   }
 }
 

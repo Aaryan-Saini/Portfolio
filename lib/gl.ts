@@ -1,6 +1,6 @@
 /* ============================================================================
    lib/gl.ts — boot-friendly WebGL setup shared by the decorative shader layers
-   (TornPaperEdge, OilFlowBackground, WavesShaderBackground).
+   (TornPaperEdge, WavesShaderBackground).
 
    Profiling the production build showed ~85% of the page's boot task was
    shader compilation for layers that are nowhere near the viewport at load:

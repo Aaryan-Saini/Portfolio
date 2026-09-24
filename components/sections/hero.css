@@ -1,0 +1,469 @@
+/* ============================================================================
+   Hero — "horizon" opener (components/sections/Hero.tsx, lib/horizonHero.ts)
+   ========================================================================== */
+
+.hz-hero {
+  --hz-bg: #120b17;
+  --hz-light: #f4f1ea;
+  --hz-accent: var(--gold, #87ceeb);
+  position: relative;
+  /* 1 stage + 2.85 of scroll: the name, the introduction (its about line
+     highlighted word by word, then a hold to read it), then the paper rising
+     into the next section (lib/horizonHero.ts) */
+  height: 385vh;
+  height: 385lvh;
+  background: var(--hz-bg);
+  color: var(--hz-light);
+}
+
+.hz-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hz-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* the real heading — read by crawlers and screen readers; the visible name is
+   the SVG lettering on the horizon */
+.hz-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ SVG overlay */
+.hz-ov {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.hz-ov text {
+  font-family: var(--serif);
+  font-kerning: normal;
+}
+.hz-words text {
+  fill: var(--hz-light);
+  font-weight: 600;
+  filter: url(#hz-ink-soft);
+}
+.hz-title text {
+  fill: var(--hz-light);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  filter: url(#hz-ink);
+}
+.hz-title .first {
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------ landing */
+.hz-landing {
+  position: absolute;
+  inset: 0;
+  color: var(--hz-light);
+  visibility: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+.hz-eyebrow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--ttop, calc(var(--apex, 53vh) - var(--tsize, 6.6vw) * 1.61));
+  margin: 0;
+  font: 500 0.8125rem/1 var(--sans);
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--hz-light) 88%, transparent);
+}
+
+/* ------------------------------------------------------------ scroll cue */
+.hz-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  bottom: calc(16px + 100lvh - 100svh);
+  z-index: 3;
+  margin: 0;
+  padding: 12px 16px;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  font: 400 12px/normal var(--sans);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--hz-light) 55%, transparent);
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translateX(-50%);
+  transition: color 0.2s;
+}
+.hz-cue:hover {
+  color: color-mix(in srgb, var(--hz-light) 85%, transparent);
+}
+.hz-cue:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--hz-light) 70%, transparent);
+  outline-offset: -4px;
+}
+
+/* ------------------------------------------------------------ introduction
+   Crossfades in where the name stood: heading + quote sit on the horizon, a
+   short "about me" paragraph and a row of highlights below it on the night
+   side (same --apex geometry). */
+.hz-credo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  color: var(--hz-light);
+  opacity: 0;
+  pointer-events: none;
+}
+.hz-credo-top {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - var(--apex, 53vh) + clamp(10px, 1.6vh, 18px));
+  width: min(920px, 100% - 2 * clamp(64px, 11vw, 150px));
+  text-align: center;
+  transform: translateX(-50%);
+}
+.hz-credo-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  margin: 0 0 clamp(0.7rem, 2vh, 1.3rem);
+  font: 500 clamp(1.05rem, 1.5vw, 1.4rem) / 1.1 var(--serif);
+  letter-spacing: 0.01em;
+}
+.hz-credo-head em {
+  font-style: italic;
+}
+.hz-credo-head .crest__laurel {
+  flex: none;
+  width: 0.7em;
+  height: 1.4em;
+  opacity: 0.85;
+}
+.hz-quote {
+  margin: 0;
+  font: 600 clamp(2rem, min(4.4vw, 7.4vh), 4.4rem) / 1.04 var(--serif);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.hz-quote em {
+  font-style: italic;
+}
+.hz-credo-body {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--apex, 53vh) + clamp(34px, 7vh, 76px));
+  width: min(820px, 100% - 2 * clamp(64px, 11vw, 150px));
+  text-align: center;
+  transform: translateX(-50%);
+}
+/* one line about me in the display serif, big enough to read at a glance;
+   its words are filled from ghost to full by scroll */
+.hz-about {
+  margin: 0;
+  font: 500 clamp(1.4rem, 0.95rem + 1.5vw, 2.35rem) / 1.3 var(--serif);
+  letter-spacing: -0.005em;
+  color: var(--hz-light);
+  text-wrap: balance;
+}
+/* --hl (0…1, set by the engine) is the highlight: the word flares rose and
+   glows as the scroll reaches it, then settles back to cream */
+.hz-w {
+  --hl: 0;
+  display: inline-block;
+  opacity: 0.3;
+  color: color-mix(in srgb, var(--gold, #efa2b6) calc(var(--hl) * 100%), var(--hz-light));
+  text-shadow: 0 0 calc(var(--hl) * 22px) rgba(239, 162, 182, calc(var(--hl) * 0.75));
+  will-change: opacity, transform;
+}
+.hz-w--a {
+  font-style: italic;
+  color: var(--gold, #efa2b6);
+}
+@media (max-width: 760px) {
+  .hz-credo-top {
+    width: calc(100% - 56px);
+  }
+  .hz-quote {
+    font-size: clamp(1.9rem, 8.6vw, 2.5rem);
+  }
+  /* clear of the thin photo strips on both sides (up to ~24px each) */
+  .hz-credo-body {
+    top: calc(var(--apex, 53vh) + 22px);
+    width: calc(100% - 76px);
+  }
+  .hz-about {
+    font-size: clamp(1.25rem, 5.6vw, 1.5rem);
+    line-height: 1.32;
+  }
+}
+
+/* ------------------------------------------------------------ torn paper
+   The WebGL torn edge (transparent above the tear, so the hero itself shows
+   there) and a sheet of paper below, tall enough to fill the stage once the
+   strip has risen. It waits
+   just below the stage (the hero owns the whole screen at rest) and the
+   engine raises it in once the introduction is up. The transform here is
+   only the pre-JS resting place, off screen so nothing flashes. */
+.hz-paper {
+  --hz-tear-h: 320px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: calc(var(--hz-tear-h) + 100vh + 40px);
+  height: calc(var(--hz-tear-h) + 100lvh + 40px);
+  pointer-events: none;
+  transform: translate3d(0, calc(100vh + 2px), 0);
+  transform: translate3d(0, calc(100lvh + 2px), 0);
+  will-change: transform;
+}
+.hz-paper-tear {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: var(--hz-tear-h);
+}
+/* the same plum ground as FeaturedProjects (.edt-paper), so the hand-off is
+   seamless. It starts 40px up, under the tear canvas' own paper, so the two
+   can never leave a sub-pixel seam between them at a fractional transform. */
+.hz-paper-sheet {
+  position: absolute;
+  top: calc(var(--hz-tear-h) - 40px);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--night);
+}
+/* the static SVG tear stands in until (or unless) the WebGL tear draws */
+.hz-hero.has-gl-tear .hz-paper-fallback {
+  display: none;
+}
+@media (max-width: 767.98px) {
+  .hz-paper {
+    --hz-tear-h: 220px;
+  }
+}
+
+/* where "#about" lands: the introduction shown and its about line fully
+   highlighted (p ≈ 1.7), plus the fixed header's clearance the anchor glide
+   subtracts */
+.hz-anchor {
+  position: absolute;
+  top: calc(170lvh + 92px);
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.hz-stage.is-loading .hz-ov,
+.hz-stage.is-loading .hz-landing,
+.hz-stage.is-loading .hz-credo {
+  visibility: hidden;
+}
+.hz-stage:not(.is-ready) .hz-cue {
+  visibility: hidden;
+}
+
+@media (max-width: 760px) {
+  .hz-eyebrow {
+    font-size: 12px;
+    transform: translateY(-1rem);
+  }
+}
+
+/* ------------------------------------------------------------ fallback
+   Shown without WebGL (bands driven by the engine through CSS vars) and
+   without JavaScript (static first frame). Hidden in WebGL mode, where its
+   images are only texture sources. */
+.hz-fallback {
+  --a: var(--hz-apex, 56%);
+  --r: var(--hz-r, 5000px);
+  --hs: var(--hz-hs, 55vh);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.hz-hero.is-gl .hz-fallback {
+  visibility: hidden;
+}
+/* one radial gradient centred on the horizon circle, so the sky's bands and
+   the limb curve together exactly as the WebGL horizon does (--hs = the
+   altitude unit, .55 of the stage height) */
+.hz-fb-sky {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle calc(var(--r) + var(--hs) * 1.2) at 50% calc(var(--a) + var(--r)),
+    #180f1d 0,
+    #1c1122 calc(var(--r) - 140px),
+    #29122a calc(var(--r) - 14px),
+    #6b243d calc(var(--r) - 1px),
+    #d95876 var(--r),
+    #ef849b calc(var(--r) + var(--hs) * 0.014),
+    #f7c3cf calc(var(--r) + var(--hs) * 0.05),
+    #d89ebf calc(var(--r) + var(--hs) * 0.12),
+    #9a75ad calc(var(--r) + var(--hs) * 0.22),
+    #6f538f calc(var(--r) + var(--hs) * 0.32),
+    #422d66 calc(var(--r) + var(--hs) * 0.45),
+    #281942 calc(var(--r) + var(--hs) * 0.62),
+    #180f28 calc(var(--r) + var(--hs) * 0.8),
+    #100a19 calc(var(--r) + var(--hs) * 1.1)
+  );
+}
+.hz-fb-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  opacity: var(--hz-fb-alpha, 1);
+}
+.hz-fb-left {
+  left: 0;
+  width: 27%;
+  box-shadow: 2px 0 0 #efeee9, 8px 0 18px rgba(0, 0, 0, 0.35);
+}
+.hz-fb-right {
+  right: 0;
+  width: 31%;
+  box-shadow: -2px 0 0 #efeee9, -8px 0 18px rgba(0, 0, 0, 0.35);
+}
+.hz-fb-band img {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+.hz-fb-left img {
+  left: 0;
+  width: var(--hz-band, calc(27vw + 60px));
+  object-position: 50% 50%;
+}
+.hz-fb-right img {
+  right: 0;
+  width: var(--hz-band, calc(31vw + 60px));
+  object-position: 62% 56%;
+}
+@media (max-width: 760px) {
+  .hz-fb-left {
+    width: 17%;
+  }
+  .hz-fb-right {
+    width: 20%;
+  }
+}
+
+/* ------------------------------------------------------------ static modes */
+/* reduced motion: no scrubbing — the landed name, then (halfway down) the
+   introduction in its place */
+@media (prefers-reduced-motion: reduce) {
+  .hz-hero {
+    height: 200vh;
+    height: 200lvh;
+  }
+  .hz-anchor {
+    top: calc(60lvh + 92px);
+  }
+}
+
+/* no JavaScript / engine failed: a static first frame, then the introduction
+   in normal flow beneath it, and the torn paper (static SVG tear) closing the
+   stage into FeaturedProjects' paper */
+html.no-js .hz-hero,
+.hz-hero[data-hz-failed] {
+  height: auto;
+}
+html.no-js .hz-stage,
+.hz-hero[data-hz-failed] .hz-stage {
+  position: relative;
+  height: auto;
+  padding: 100vh 0 340px;
+}
+html.no-js .hz-fallback,
+html.no-js .hz-landing,
+.hz-hero[data-hz-failed] .hz-fallback,
+.hz-hero[data-hz-failed] .hz-landing {
+  bottom: auto;
+  height: 100vh;
+}
+html.no-js .hz-credo,
+.hz-hero[data-hz-failed] .hz-credo {
+  --apex: 45vh;
+  position: relative;
+  inset: auto;
+  height: calc(45vh + 400px);
+  opacity: 1;
+  transform: none;
+}
+html.no-js .hz-paper,
+.hz-hero[data-hz-failed] .hz-paper {
+  top: auto;
+  bottom: 0;
+  height: var(--hz-tear-h);
+  transform: none;
+}
+html.no-js .hz-anchor,
+.hz-hero[data-hz-failed] .hz-anchor {
+  top: 100vh;
+}
+html.no-js .hz-landing,
+.hz-hero[data-hz-failed] .hz-landing {
+  visibility: visible;
+}
+/* nothing scrubs the about line without the engine — print it in full */
+html.no-js .hz-w,
+.hz-hero[data-hz-failed] .hz-w {
+  opacity: 1;
+}
+html.no-js .hz-ov,
+html.no-js .hz-cue,
+.hz-hero[data-hz-failed] .hz-ov,
+.hz-hero[data-hz-failed] .hz-cue,
+html.no-js .hz-heading-role,
+.hz-hero[data-hz-failed] .hz-heading-role {
+  display: none;
+}
+html.no-js .hz-heading,
+.hz-hero[data-hz-failed] .hz-heading {
+  top: calc(50vh - clamp(34px, 6.6vw, 112px) * 0.62);
+  left: 0;
+  right: 0;
+  z-index: 1;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  font: 500 clamp(34px, 6.6vw, 112px) / 1.05 var(--serif);
+  letter-spacing: -0.012em;
+  text-align: center;
+  white-space: normal;
+  color: var(--hz-light);
+}

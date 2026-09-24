@@ -1,0 +1,10 @@
+# dependencies and build output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+*.log
+
+# local secrets / Vercel link state
+.vercel
+.env*

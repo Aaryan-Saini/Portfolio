@@ -2,13 +2,14 @@
 
 /* ============================================================================
    HonoursEditorial — "Marks of Recognition & honours".
-   A prize register cut straight into the mountains: the blue ridge plate from
-   the original Vercel build (honours-bg.webp) is the ground here, unveiled and
-   FIXED to the viewport so the page scrolls over stationary peaks. That makes
+   A prize register cut straight into the mountains: a sunrise over layered
+   plum ridgelines in the site's dusk palette (honours-dusk.webp — a pale
+   rose sun, the dawn-rose band, plum night above) is the ground here, FIXED
+   to the viewport so the page scrolls over stationary peaks. That makes
    this an .edt-dark spread — paper-coloured type on the range — carrying the
    dark Experience block above it down into the tinted Resume paper below.
    A laurel crest announces the section, then the four honours run as a React
-   Bits <FlowingMenu/> — serif title rows whose hover reveals a flowing cyan
+   Bits <FlowingMenu/> — serif title rows whose hover reveals a flowing amber
    band alternating a terse mono tag with the honour's photographic pill.
    ========================================================================== */
 
@@ -26,7 +27,8 @@ type Honour = {
   title: string;
   desc: string;
   tag: string;
-  /** photo for this row's pill — drop the file at public/honours/<name> */
+  /** photo for this row's pill — public/honours/<name>-dusk.webp is the
+      original graded into the dusk palette (the untouched <name>.webp stays) */
   photo: string;
   /** generated stand-in, painted under the photo until that file exists */
   plate: string;
@@ -54,31 +56,31 @@ const plate = (body: string): string =>
 const GRAIN = `<filter id="gr"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>`;
 const GRAIN_LAYER = `<rect width="200" height="80" filter="url(#gr)" opacity="0.15"/>`;
 
-/* 01 — ridgeline at dusk: the mountain plate behind the section, in miniature */
+/* 01 — ridgeline at dawn: the hero's sky over the mountain plate, in miniature */
 const PLATE_RIDGE = plate(
-  `<defs>${GRAIN}<linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e84ae"/><stop offset="0.5" stop-color="#20265e"/><stop offset="1" stop-color="#15173d"/></linearGradient></defs>` +
+  `<defs>${GRAIN}<linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1f36"/><stop offset="0.45" stop-color="#9c6f93"/><stop offset="0.68" stop-color="#e7bfc9"/><stop offset="0.86" stop-color="#fdb77a"/><stop offset="1" stop-color="#c4553a"/></linearGradient></defs>` +
     `<rect width="200" height="80" fill="url(#a)"/>` +
-    `<circle cx="152" cy="24" r="12" fill="#b1dff2" opacity="0.8"/>` +
-    `<path d="M0 60 L34 36 L58 52 L88 28 L118 56 L148 38 L200 64 L200 80 L0 80 Z" fill="#181b46" opacity="0.95"/>` +
-    `<path d="M0 71 L28 55 L62 69 L98 51 L134 71 L172 57 L200 73 L200 80 L0 80 Z" fill="#0d0f2b"/>` +
+    `<circle cx="152" cy="50" r="12" fill="#fff1e2" opacity="0.85"/>` +
+    `<path d="M0 60 L34 36 L58 52 L88 28 L118 56 L148 38 L200 64 L200 80 L0 80 Z" fill="#2e1a2a" opacity="0.95"/>` +
+    `<path d="M0 71 L28 55 L62 69 L98 51 L134 71 L172 57 L200 73 L200 80 L0 80 Z" fill="#140c14"/>` +
     GRAIN_LAYER
 );
 
 /* 02 — circuit trace: nodes and rails, for the AI/ML placing */
 const PLATE_CIRCUIT = plate(
-  `<defs>${GRAIN}<linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1c1e4d"/><stop offset="1" stop-color="#0f1130"/></linearGradient></defs>` +
+  `<defs>${GRAIN}<linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1c28"/><stop offset="1" stop-color="#150f16"/></linearGradient></defs>` +
     `<rect width="200" height="80" fill="url(#a)"/>` +
-    `<g stroke="#87ceeb" stroke-opacity="0.22" stroke-width="1"><path d="M0 20H200M0 40H200M0 60H200"/><path d="M25 0V80M50 0V80M75 0V80M100 0V80M125 0V80M150 0V80M175 0V80"/></g>` +
-    `<g fill="none" stroke="#87ceeb" stroke-opacity="0.8" stroke-width="1.8"><path d="M25 60H75V40h50V20h50"/><path d="M0 40h50v20h50V40h50v20h50"/></g>` +
-    `<g fill="#dff2fb"><circle cx="75" cy="40" r="3.2"/><circle cx="125" cy="20" r="3.2"/><circle cx="50" cy="60" r="2.6"/><circle cx="150" cy="60" r="2.6"/><circle cx="100" cy="40" r="2.6"/></g>` +
+    `<g stroke="#efa2b6" stroke-opacity="0.22" stroke-width="1"><path d="M0 20H200M0 40H200M0 60H200"/><path d="M25 0V80M50 0V80M75 0V80M100 0V80M125 0V80M150 0V80M175 0V80"/></g>` +
+    `<g fill="none" stroke="#efa2b6" stroke-opacity="0.8" stroke-width="1.8"><path d="M25 60H75V40h50V20h50"/><path d="M0 40h50v20h50V40h50v20h50"/></g>` +
+    `<g fill="#fff1e2"><circle cx="75" cy="40" r="3.2"/><circle cx="125" cy="20" r="3.2"/><circle cx="50" cy="60" r="2.6"/><circle cx="150" cy="60" r="2.6"/><circle cx="100" cy="40" r="2.6"/></g>` +
     GRAIN_LAYER
 );
 
 /* 03 — contour swell: stacked topographic lines, for the hackathon run */
 const PLATE_CONTOUR = plate(
-  `<defs>${GRAIN}<linearGradient id="a" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#15173d"/><stop offset="0.5" stop-color="#223070"/><stop offset="1" stop-color="#15173d"/></linearGradient></defs>` +
+  `<defs>${GRAIN}<linearGradient id="a" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1e1520"/><stop offset="0.5" stop-color="#3a2440"/><stop offset="1" stop-color="#1e1520"/></linearGradient></defs>` +
     `<rect width="200" height="80" fill="url(#a)"/>` +
-    `<g fill="none" stroke="#87ceeb" stroke-width="1.5">` +
+    `<g fill="none" stroke="#efa2b6" stroke-width="1.5">` +
     `<path d="M-10 18Q25 4 60 18T130 18T210 18" stroke-opacity="0.5"/>` +
     `<path d="M-10 32Q25 18 60 32T130 32T210 32" stroke-opacity="0.72"/>` +
     `<path d="M-10 46Q25 32 60 46T130 46T210 46" stroke-opacity="0.9"/>` +
@@ -90,12 +92,12 @@ const PLATE_CONTOUR = plate(
 
 /* 04 — constellation bloom: a lit cluster, for the community entry */
 const PLATE_BLOOM = plate(
-  `<defs>${GRAIN}<radialGradient id="a" cx="0.34" cy="0.42" r="0.8"><stop offset="0" stop-color="#2b64a6"/><stop offset="0.55" stop-color="#1a1f52"/><stop offset="1" stop-color="#0f1130"/></radialGradient></defs>` +
+  `<defs>${GRAIN}<radialGradient id="a" cx="0.34" cy="0.42" r="0.8"><stop offset="0" stop-color="#c4553a"/><stop offset="0.55" stop-color="#3a1f36"/><stop offset="1" stop-color="#150f16"/></radialGradient></defs>` +
     `<rect width="200" height="80" fill="url(#a)"/>` +
-    `<circle cx="68" cy="34" r="22" fill="#87ceeb" opacity="0.18"/>` +
-    `<circle cx="68" cy="34" r="9" fill="#dff2fb" opacity="0.5"/>` +
-    `<g fill="#dff2fb"><circle cx="20" cy="16" r="1.7" opacity="0.9"/><circle cx="44" cy="58" r="1.3" opacity="0.7"/><circle cx="96" cy="18" r="1.9" opacity="0.85"/><circle cx="118" cy="52" r="1.4" opacity="0.75"/><circle cx="142" cy="28" r="2.1" opacity="0.9"/><circle cx="166" cy="62" r="1.5" opacity="0.7"/><circle cx="184" cy="22" r="1.2" opacity="0.6"/><circle cx="32" cy="40" r="1.1" opacity="0.55"/></g>` +
-    `<g stroke="#87ceeb" stroke-opacity="0.4" stroke-width="0.8" fill="none"><path d="M20 16L68 34L96 18M68 34L118 52L142 28L166 62"/></g>` +
+    `<circle cx="68" cy="34" r="22" fill="#efa2b6" opacity="0.18"/>` +
+    `<circle cx="68" cy="34" r="9" fill="#fff1e2" opacity="0.5"/>` +
+    `<g fill="#fff1e2"><circle cx="20" cy="16" r="1.7" opacity="0.9"/><circle cx="44" cy="58" r="1.3" opacity="0.7"/><circle cx="96" cy="18" r="1.9" opacity="0.85"/><circle cx="118" cy="52" r="1.4" opacity="0.75"/><circle cx="142" cy="28" r="2.1" opacity="0.9"/><circle cx="166" cy="62" r="1.5" opacity="0.7"/><circle cx="184" cy="22" r="1.2" opacity="0.6"/><circle cx="32" cy="40" r="1.1" opacity="0.55"/></g>` +
+    `<g stroke="#efa2b6" stroke-opacity="0.4" stroke-width="0.8" fill="none"><path d="M20 16L68 34L96 18M68 34L118 52L142 28L166 62"/></g>` +
     GRAIN_LAYER
 );
 
@@ -105,7 +107,7 @@ const HONOURS: Honour[] = [
     title: "50% Merit Scholarship",
     desc: "Poornima University — Merit-based undergraduate scholarship for academic excellence.",
     tag: "50% Scholarship",
-    photo: "/honours/scholarship.webp",
+    photo: "/honours/scholarship-dusk.webp",
     plate: PLATE_RIDGE,
   },
   {
@@ -113,7 +115,7 @@ const HONOURS: Honour[] = [
     title: "Top 10 · Prayogam",
     desc: "Inter-University AI/ML competition — top 10 rank for Diabetic Retinopathy project.",
     tag: "Top 10 · Prayogam",
-    photo: "/honours/prayogam.webp",
+    photo: "/honours/prayogam-dusk.webp",
     plate: PLATE_CIRCUIT,
   },
   {
@@ -121,7 +123,7 @@ const HONOURS: Honour[] = [
     title: "Top 50 · Hack2Skill",
     desc: "National-level hackathon — top 50 finish among hundreds of competing teams.",
     tag: "Top 50 · Hack2Skill",
-    photo: "/honours/hack2skill.webp",
+    photo: "/honours/hack2skill-dusk.webp",
     plate: PLATE_CONTOUR,
   },
   {
@@ -129,7 +131,7 @@ const HONOURS: Honour[] = [
     title: "Google GDG Participant",
     desc: "Google Solution Challenge — participant with GDG campus community.",
     tag: "Google GDG",
-    photo: "/honours/gdg.webp",
+    photo: "/honours/gdg-dusk.webp",
     plate: PLATE_BLOOM,
   },
 ];
@@ -261,7 +263,7 @@ const css = /* css */ `
    (IntersectionObserver in the component); composed here so asset() gets the
    basePath — no veil, the range reads at full strength */
 .hnx-root.hnx-near {
-  background-image: url("${asset("/honours-bg.webp")}");
+  background-image: url("${asset("/honours-dusk.webp")}");
 }
 /* touch / narrow viewports: iOS ignores fixed attachment and repaints cost —
    let the range scroll with the section instead */
@@ -301,7 +303,12 @@ const css = /* css */ `
 .hnx-flow .menu__item-link:hover {
   font-style: italic;
 }
-/* the flowing band: terse mono stamp alternating with photographic pills */
+/* the flowing band: the hero's rose sky band (pale rose → rose → berry-rose) laid
+   over the solid --gold the menu component sets as its background colour */
+.hnx-flow .marquee {
+  background-image: linear-gradient(100deg, var(--gold-soft) 0%, var(--gold) 48%, #d9728f 100%);
+}
+/* terse mono stamp alternating with photographic pills */
 .hnx-flow .marquee span {
   font-family: var(--mono);
   font-style: normal;
@@ -345,7 +352,7 @@ const css = /* css */ `
 /* ----------------------------------------------------------------- MOBILE
    The flowing menu is hover-only, so phones get the plain register instead:
    photo pill, year, title and the full citation, on a frosted ink panel so
-   the type holds against the mountain photograph. */
+   the type holds against the mountain plate. */
 @media (max-width: 767.98px) {
   .hnx-root {
     background-position: center 30%;
@@ -359,7 +366,7 @@ const css = /* css */ `
     margin-top: 1.9rem;
     padding: 0.2rem 0.95rem;
     border-radius: 10px;
-    background: linear-gradient(180deg, rgba(16, 17, 44, 0.42), rgba(16, 17, 44, 0.62));
+    background: linear-gradient(180deg, rgba(21, 15, 22, 0.42), rgba(21, 15, 22, 0.62));
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -383,7 +390,7 @@ const css = /* css */ `
     background-size: cover;
     background-position: center;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 20px rgba(7, 8, 23, 0.45);
+    box-shadow: 0 8px 20px rgba(12, 8, 12, 0.45);
   }
   .hnx-item__year {
     font-family: var(--mono);

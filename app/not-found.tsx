@@ -29,7 +29,7 @@ const QUICK_LINKS = [
 
 export default function NotFound() {
   return (
-    <main className="nf-root">
+    <main className="nf-root edt-paper">
       <section className="nf-stage">
         {/* --------------------------------------------------- illustration */}
         <div className="nf-art" aria-hidden="true">
@@ -53,15 +53,15 @@ export default function NotFound() {
               </filter>
               <linearGradient id="nf-sheet" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" stopColor="#ffffff" />
-                <stop offset="1" stopColor="#eef8fd" />
+                <stop offset="1" stopColor="#f3ebdf" />
               </linearGradient>
             </defs>
 
             {/* watercolour wash behind the sheet */}
             <g filter="url(#nf-wash)" opacity="0.5">
-              <ellipse cx="205" cy="140" rx="150" ry="96" fill="#b1dff2" />
-              <ellipse cx="285" cy="170" rx="120" ry="78" fill="#87ceeb" opacity="0.75" />
-              <ellipse cx="170" cy="185" rx="104" ry="60" fill="#dbeff9" />
+              <ellipse cx="205" cy="140" rx="150" ry="96" fill="#f7cfd9" />
+              <ellipse cx="285" cy="170" rx="120" ry="78" fill="#efa2b6" opacity="0.75" />
+              <ellipse cx="170" cy="185" rx="104" ry="60" fill="#f6dcc0" />
             </g>
 
             {/* the mislaid sheet */}
@@ -73,19 +73,19 @@ export default function NotFound() {
                 height="196"
                 rx="2"
                 fill="url(#nf-sheet)"
-                stroke="#c9dbe6"
+                stroke="#d9c9b4"
                 strokeWidth="1"
               />
-              <rect x="120" y="52" width="220" height="196" fill="#15173d" opacity="0.04" filter="url(#nf-grain)" />
+              <rect x="120" y="52" width="220" height="196" fill="#1e1520" opacity="0.04" filter="url(#nf-grain)" />
               {/* header rule */}
-              <line x1="140" y1="86" x2="320" y2="86" stroke="#1e84ae" strokeWidth="1" opacity="0.5" />
+              <line x1="140" y1="86" x2="320" y2="86" stroke="#a63e5c" strokeWidth="1" opacity="0.5" />
               <text
                 x="140"
                 y="78"
                 fontFamily="var(--mono), monospace"
                 fontSize="8"
                 letterSpacing="2.6"
-                fill="#1e84ae"
+                fill="#a63e5c"
               >
                 DEFECT REPORT
               </text>
@@ -97,12 +97,12 @@ export default function NotFound() {
                 fontFamily="var(--serif), Georgia, serif"
                 fontStyle="italic"
                 fontSize="72"
-                fill="#15173d"
+                fill="#1e1520"
               >
                 404
               </text>
               {/* redacted body lines, same motif as the résumé leaf */}
-              <g fill="#15173d" opacity="0.14">
+              <g fill="#1e1520" opacity="0.14">
                 <rect x="146" y="182" width="148" height="5" />
                 <rect x="146" y="196" width="120" height="5" />
                 <rect x="146" y="210" width="136" height="5" />
@@ -111,15 +111,15 @@ export default function NotFound() {
 
             {/* wax seal, pinned to the corner */}
             <g transform="translate(348 74) rotate(12)">
-              <circle r="34" fill="#15173d" />
-              <circle r="27" fill="none" stroke="#87ceeb" strokeWidth="0.8" opacity="0.65" />
+              <circle r="34" fill="#1e1520" />
+              <circle r="27" fill="none" stroke="#efa2b6" strokeWidth="0.8" opacity="0.65" />
               <text
                 textAnchor="middle"
                 y="-6"
                 fontFamily="var(--mono), monospace"
                 fontSize="7"
                 letterSpacing="1.6"
-                fill="#87ceeb"
+                fill="#efa2b6"
               >
                 NOT
               </text>
@@ -129,13 +129,13 @@ export default function NotFound() {
                 fontFamily="var(--mono), monospace"
                 fontSize="7"
                 letterSpacing="1.6"
-                fill="#87ceeb"
+                fill="#efa2b6"
               >
                 FOUND
               </text>
               <path
                 d="M-11 14 h22"
-                stroke="#87ceeb"
+                stroke="#efa2b6"
                 strokeWidth="1"
                 opacity="0.5"
                 strokeLinecap="round"
@@ -146,7 +146,7 @@ export default function NotFound() {
             <g
               transform="translate(126 236) rotate(-12)"
               fill="none"
-              stroke="#15173d"
+              stroke="#1e1520"
               strokeWidth="1.7"
               strokeLinecap="round"
             >
@@ -207,14 +207,12 @@ const css = /* css */ `
   padding: clamp(2rem, 6vw, 4rem) var(--pad, 1.4rem);
   overflow: clip;
 }
-/* This <style> only ships inside 404.html, so re-skinning <body> here is
+/* This style block only ships inside 404.html, so re-skinning <body> here is
    scoped to the error page. It has to be body rather than .nf-root: body's
    background is what propagates to the canvas, and the site's default dark
    --bg would otherwise flash in the overscroll gutter on mobile. */
 body {
-  background: var(--parch-2, #effafe);
-  background-image: var(--paper-noise);
-  background-blend-mode: multiply;
+  background: var(--night, #1a1020);
 }
 
 /* --------------------------------------------------------------- the stage */
@@ -242,7 +240,7 @@ body {
   color: var(--ink);
   margin: 0;
 }
-.nf-title em { font-style: italic; color: var(--gold-deep, #1e84ae); }
+.nf-title em { font-style: italic; color: var(--gold-deep, #a63e5c); }
 
 .nf-lede {
   font-family: var(--body);
@@ -271,14 +269,14 @@ body {
   letter-spacing: 0.04em;
   text-transform: none;
   color: var(--ink);
-  border: 1px solid var(--ink-line, rgba(21, 23, 61, 0.16));
-  background: color-mix(in srgb, var(--parch, #fff) 70%, transparent);
+  border: 1px solid var(--ink-line, rgba(246, 235, 220, 0.18));
+  background: transparent;
 }
 .nf-btn--ghost > span {
   padding: 0.95rem 1.6rem;
 }
 .nf-btn--ghost:hover {
-  border-color: var(--gold, #87ceeb);
+  border-color: var(--gold, #efa2b6);
 }
 
 .nf-hint {
@@ -309,13 +307,13 @@ body {
   transition: color 0.25s var(--ease, ease), border-color 0.25s var(--ease, ease);
 }
 .nf-links a:hover {
-  color: var(--gold-deep, #1e84ae);
-  border-color: var(--gold-deep, #1e84ae);
+  color: var(--gold-deep, #a63e5c);
+  border-color: var(--gold-deep, #a63e5c);
 }
 
 /* register marks, same as the editorial sections */
 .nf-xh { position: absolute; width: 26px; height: 26px; opacity: 0.35; }
-.nf-xh::before, .nf-xh::after { content: ""; position: absolute; background: var(--gold-deep, #1e84ae); }
+.nf-xh::before, .nf-xh::after { content: ""; position: absolute; background: var(--gold-deep, #a63e5c); }
 .nf-xh::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
 .nf-xh::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
 .nf-xh--tl { top: clamp(18px, 3vw, 40px); left: clamp(18px, 3vw, 40px); }
